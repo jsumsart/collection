@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JSU Department of Art Permanent Collection</title>
+  <meta
+    name="description"
+    content="Explore the Jackson State University Department of Art Permanent Collection."
+  >
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
+  <link rel="icon" href="./favicon.ico">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="JSU Art home">
+        <img src="./assets/logo.png" alt="JSU Department of Art logo">
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="#collection">Collection</a>
+        <a href="#about">About</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Jackson State University</p>
+          <h1>Department of Art Permanent Collection</h1>
+          <p class="hero-text">
+            A renewed digital home for the permanent collection, rebuilt as a lightweight
+            browsing experience around the artwork records and images.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#collection">Browse the Collection</a>
+            <a class="button button-secondary" href="./_data/jsuart_metadata.csv">Download Metadata CSV</a>
+          </div>
+        </div>
+        <aside class="hero-panel">
+          <p class="panel-label">Collection Snapshot</p>
+          <div class="stats" id="stats">
+            <article>
+              <span class="stat-value" id="artwork-count">--</span>
+              <span class="stat-label">Works</span>
+            </article>
+            <article>
+              <span class="stat-value" id="creator-count">--</span>
+              <span class="stat-label">Creators</span>
+            </article>
+            <article>
+              <span class="stat-value" id="subject-count">--</span>
+              <span class="stat-label">Subjects</span>
+            </article>
+          </div>
+        </aside>
+      </section>
+
+      <section class="controls" id="collection">
+        <div>
+          <p class="section-label">Browse</p>
+          <h2>Search the collection</h2>
+        </div>
+        <div class="toolbar">
+          <label class="search-field">
+            <span class="visually-hidden">Search the collection</span>
+            <input id="search-input" type="search" placeholder="Search by title, creator, subject, or place">
+          </label>
+          <label class="filter-field">
+            <span class="visually-hidden">Filter by subject</span>
+            <select id="subject-filter">
+              <option value="">All subjects</option>
+            </select>
+          </label>
+        </div>
+      </section>
+
+      <section class="results-bar" aria-live="polite">
+        <p id="results-count">Loading collection...</p>
+        <label class="filter-field sort-field">
+          <span class="visually-hidden">Sort artworks</span>
+          <select id="sort-select">
+            <option value="title-asc">Sort: Title A-Z</option>
+            <option value="title-desc">Sort: Title Z-A</option>
+            <option value="creator-asc">Sort: Creator A-Z</option>
+            <option value="date-asc">Sort: Date Oldest-Newest</option>
+            <option value="date-desc">Sort: Date Newest-Oldest</option>
+          </select>
+        </label>
+      </section>
+
+      <section class="gallery" id="gallery"></section>
+
+      <section class="about" id="about">
+        <div>
+          <p class="section-label">About</p>
+          <h2>A teaching collection, an archive, and a record of Black artistic formation</h2>
+        </div>
+        <p>
+          The Jackson State University Department of Art Permanent Collection was formed through the
+          daily working life of an art department: classrooms, studios, exhibitions, visiting artists,
+          gifts, workshops, and acts of preservation. It reflects the labor of faculty, students,
+          alumni, and community networks who built a visual arts program within the context of an HBCU
+          in Mississippi.
+        </p>
+      </section>
+
+      <section class="context">
+        <article class="context-card">
+          <p class="section-label">Collection History</p>
+          <h3>More than a conventional museum collection</h3>
+          <p>
+            The collection includes paintings, prints, ceramics, photographs, works on paper,
+            portraits, graphic works, faculty work, student studies, international prints, and
+            South African works. Its unevenness is part of its meaning: attributed works, unknown
+            makers, fragmentary records, and vulnerable objects all speak to the realities of
+            collection stewardship under unequal conditions.
+          </p>
+        </article>
+        <article class="context-card">
+          <p class="section-label">Institutional Context</p>
+          <h3>Rooted in Jackson, connected far beyond it</h3>
+          <p>
+            Catalog research traces connections among Johnson Hall, Jackson State University,
+            Tougaloo, Memphis, the Mississippi Delta, Black Studies, and broader diasporic and
+            international visual traditions. The collection documents not only artworks, but also
+            the institutional, civic, and pedagogical worlds that shaped them.
+          </p>
+        </article>
+        <article class="context-card">
+          <p class="section-label">Documentation</p>
+          <h3>Grounded in the catalog and local research files</h3>
+          <p>
+            This site draws on local catalog documentation, figure caption audits, and metadata
+            review files assembled for the JSU permanent collection. Public-facing copy here is
+            adapted from those materials to support browsing, teaching, and further research.
+          </p>
+        </article>
+      </section>
+
+      <section class="stewardship">
+        <div>
+          <p class="section-label">Stewardship</p>
+          <h2>Rights, use, and research</h2>
+        </div>
+        <p>
+          Artwork records on this site retain the rights statements supplied with the collection
+          metadata. Reproduction, redistribution, and publication may require written permission
+          from the Jackson State University Department of Art. Researchers should treat this site
+          as a public access layer for an actively documented teaching collection rather than a
+          final scholarly catalogue raisonne.
+        </p>
+      </section>
+    </main>
+  </div>
+
+  <template id="card-template">
+    <article class="card" tabindex="0">
+      <div class="card-media">
+        <img alt="" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-kicker"></p>
+        <h3></h3>
+        <p class="card-creator"></p>
+        <p class="card-description"></p>
+        <dl class="card-meta"></dl>
+      </div>
+    </article>
+  </template>
+
+  <dialog class="detail-dialog" id="detail-dialog">
+    <button class="detail-close" id="detail-close" type="button" aria-label="Close artwork details">Close</button>
+    <div class="detail-grid">
+      <div class="detail-media">
+        <img id="detail-image" alt="">
+      </div>
+      <div class="detail-copy">
+        <p class="detail-kicker" id="detail-subject"></p>
+        <h2 id="detail-title"></h2>
+        <p class="detail-creator" id="detail-creator"></p>
+        <p class="detail-description" id="detail-description"></p>
+        <p class="detail-caption" id="detail-caption" hidden></p>
+        <dl class="detail-meta" id="detail-meta"></dl>
+      </div>
+    </div>
+  </dialog>
+
+  <script src="./app.js" type="module"></script>
+</body>
+</html>
