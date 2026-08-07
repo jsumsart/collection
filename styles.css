@@ -29,6 +29,21 @@ body {
     linear-gradient(180deg, #fbf7f0 0%, var(--bg) 55%, #efe6d6 100%);
 }
 
+.skip-link {
+  position: absolute;
+  left: 16px;
+  top: -48px;
+  z-index: 10;
+  padding: 12px 16px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+}
+
+.skip-link:focus {
+  top: 16px;
+}
+
 img {
   display: block;
   max-width: 100%;
@@ -244,7 +259,6 @@ h2 {
 .card {
   overflow: hidden;
   border-radius: 28px;
-  cursor: pointer;
   transition: transform 180ms ease, box-shadow 180ms ease;
 }
 
@@ -257,6 +271,22 @@ h2 {
 .card:focus-visible {
   outline: 2px solid var(--gold);
   outline-offset: 2px;
+}
+
+.card-button {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.card-button:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: -2px;
 }
 
 .card-media {
@@ -357,6 +387,23 @@ h2 {
   grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
   gap: 24px;
   align-items: start;
+}
+
+.empty-state,
+.site-footer {
+  margin-top: 24px;
+  padding: 24px;
+  border-radius: 26px;
+  background: var(--surface);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+
+.empty-state p,
+.site-footer p {
+  color: var(--muted);
+  line-height: 1.75;
 }
 
 .detail-dialog {

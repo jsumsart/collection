@@ -7,6 +7,7 @@ const sortSelect = document.querySelector("#sort-select");
 const cardTemplate = document.querySelector("#card-template");
 const detailDialog = document.querySelector("#detail-dialog");
 const detailClose = document.querySelector("#detail-close");
+const emptyState = document.querySelector("#empty-state");
 
 let artworks = [];
 
@@ -19,7 +20,7 @@ async function loadArtworks() {
   artworks = await response.json();
   populateSubjectFilter(artworks);
   renderStats(artworks);
-  renderGallery(artworks);
+  renderGallery(sortArtworks(artworks));
 }
 
 function populateSubjectFilter(items) {
@@ -97,13 +98,19 @@ function sortArtworks(items) {
 
 function renderGallery(items) {
   gallery.innerHTML = "";
+  emptyState.hidden = items.length !== 0;
   const fragment = document.createDocumentFragment();
 
   for (const item of items) {
     const card = cardTemplate.content.firstElementChild.cloneNode(true);
+    const cardButton = card.querySelector(".card-button");
     const image = card.querySelector("img");
     image.src = item.image;
     image.alt = item.title ? `${item.title} by ${item.creator || "Unknown"}` : "Artwork from the JSU collection";
+    image.addEventListener("error", () => {
+      image.src = "./assets/logo.png";
+      image.alt = "JSU Department of Art logo placeholder";
+    });
 
     card.querySelector(".card-kicker").textContent = item.subject || "Collection Work";
     card.querySelector("h3").textContent = item.title || "Untitled";
@@ -117,8 +124,9 @@ function renderGallery(items) {
       metaRow("Rights", item.rights || "JSU")
     );
 
-    card.addEventListener("click", () => openDetail(item));
-    card.addEventListener("keydown", (event) => {
+    cardButton.setAttribute("aria-label", `Open details for ${item.title || "Untitled"} by ${item.creator || "Unknown creator"}`);
+    cardButton.addEventListener("click", () => openDetail(item));
+    cardButton.addEventListener("keydown", (event) => {
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
         openDetail(item);
@@ -129,7 +137,10 @@ function renderGallery(items) {
   }
 
   gallery.append(fragment);
-  resultsCount.textContent = `${items.length} work${items.length === 1 ? "" : "s"} shown`;
+  resultsCount.textContent =
+    items.length === 0
+      ? "0 works shown"
+      : `${items.length} work${items.length === 1 ? "" : "s"} shown`;
 }
 
 function metaRow(label, value) {
@@ -143,8 +154,13 @@ function metaRow(label, value) {
 }
 
 function openDetail(item) {
-  document.querySelector("#detail-image").src = item.image;
-  document.querySelector("#detail-image").alt = item.title || "Artwork detail";
+  const detailImage = document.querySelector("#detail-image");
+  detailImage.src = item.image;
+  detailImage.alt = item.title || "Artwork detail";
+  detailImage.onerror = () => {
+    detailImage.src = "./assets/logo.png";
+    detailImage.alt = "JSU Department of Art logo placeholder";
+  };
   document.querySelector("#detail-subject").textContent = item.subject || "Collection Work";
   document.querySelector("#detail-title").textContent = item.title || "Untitled";
   document.querySelector("#detail-creator").textContent = item.creator || "Creator unknown";
@@ -164,8 +180,8 @@ function openDetail(item) {
     metaRow("Date", item.date || "Unknown"),
     metaRow("Location", item.location || "Unknown"),
     metaRow("Source", item.source || "JSU Permanent Collection"),
-    metaRow("Type", item.type || "Still Image"),
-    metaRow("Format", item.format || "Image"),
+    metaRow("Type", formatValue(item.type) || "Still Image"),
+    metaRow("Format", formatValue(item.format) || "Image"),
     metaRow("Rights", item.rights || "JSU"),
     metaRow("Rights Statement", item.rightsstatement || "All rights reserved.")
   );
@@ -184,6 +200,10 @@ function compareNumber(left, right) {
 function parseYear(value = "") {
   const match = value.match(/\d{4}/);
   return match ? Number(match[0]) : Number.MAX_SAFE_INTEGER;
+}
+
+function formatValue(value = "") {
+  return value.replaceAll(";", ", ");
 }
 
 searchInput.addEventListener("input", filterArtworks);
@@ -205,4 +225,7 @@ detailDialog.addEventListener("click", (event) => {
 loadArtworks().catch((error) => {
   console.error(error);
   resultsCount.textContent = "The collection data could not be loaded.";
+  emptyState.hidden = false;
+  emptyState.querySelector("h2").textContent = "Collection data is temporarily unavailable";
+  emptyState.querySelector("p").textContent = "Please refresh the page or try again later.";
 });

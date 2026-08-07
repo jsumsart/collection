@@ -18,6 +18,7 @@
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
+  <a class="skip-link" href="#collection">Skip to collection</a>
   <div class="page-shell">
     <header class="site-header">
       <a class="brand" href="#top" aria-label="JSU Art home">
@@ -35,8 +36,8 @@
           <p class="eyebrow">Jackson State University</p>
           <h1>Department of Art Permanent Collection</h1>
           <p class="hero-text">
-            A renewed digital home for the permanent collection, rebuilt as a lightweight
-            browsing experience around the artwork records and images.
+            Explore selected works, collection records, and catalog-based context from the
+            Jackson State University Department of Art Permanent Collection.
           </p>
           <div class="hero-actions">
             <a class="button button-primary" href="#collection">Browse the Collection</a>
@@ -96,6 +97,11 @@
       </section>
 
       <section class="gallery" id="gallery"></section>
+      <section class="empty-state" id="empty-state" hidden aria-live="polite">
+        <p class="section-label">No Results</p>
+        <h2>No artworks match this search yet</h2>
+        <p>Try a broader search term, remove the subject filter, or sort the collection differently.</p>
+      </section>
 
       <section class="about" id="about">
         <div>
@@ -157,11 +163,20 @@
           final scholarly catalogue raisonne.
         </p>
       </section>
+
+      <footer class="site-footer">
+        <p>
+          For permissions, collection questions, or research inquiries, contact the Jackson State
+          University Department of Art. This site publishes selected records and interpretive context
+          from an actively documented departmental collection.
+        </p>
+      </footer>
     </main>
   </div>
 
   <template id="card-template">
-    <article class="card" tabindex="0">
+    <article class="card">
+      <button class="card-button" type="button">
       <div class="card-media">
         <img alt="" loading="lazy">
       </div>
@@ -172,10 +187,16 @@
         <p class="card-description"></p>
         <dl class="card-meta"></dl>
       </div>
+      </button>
     </article>
   </template>
 
-  <dialog class="detail-dialog" id="detail-dialog">
+  <dialog
+    class="detail-dialog"
+    id="detail-dialog"
+    aria-labelledby="detail-title"
+    aria-describedby="detail-description"
+  >
     <button class="detail-close" id="detail-close" type="button" aria-label="Close artwork details">Close</button>
     <div class="detail-grid">
       <div class="detail-media">
