@@ -1,10 +1,12 @@
 import csv
 import json
+from html import escape
 from pathlib import Path
 
 
 SOURCE = Path("_data/jsuart_metadata.csv")
 OUTPUT = Path("site-data/artworks.json")
+RECORDS_DIR = Path("records")
 
 CATALOG_CAPTIONS = {
     "coll003": "Karl Griffin, Juanita, n.d. Oil on canvas, 31.5 x 23.5 in.",
@@ -38,40 +40,226 @@ CATALOG_CAPTIONS = {
     "coll076": "Kojin Toneyama, Sunset, 1966. Lithograph in color, ed. 191/210, 17 x 21.75 in.",
 }
 
+FIELD_LABELS = [
+    ("objectNumber", "Object Number"),
+    ("title", "Title"),
+    ("creator", "Creator"),
+    ("date", "Date"),
+    ("subject", "Subject"),
+    ("location", "Associated Place"),
+    ("identifier", "Identifier"),
+    ("source", "Source"),
+    ("type", "Type"),
+    ("format", "Format"),
+    ("language", "Language"),
+    ("rights", "Rights"),
+    ("rightsstatement", "Rights Statement"),
+]
+
 
 def clean(value):
     return " ".join((value or "").split())
 
 
-def main():
+def format_value(value):
+    return clean(value).replace(";", ", ")
+
+
+def display_value(value, default="Not recorded"):
+    return format_value(value) or default
+
+
+def normalize_id(raw_id, index):
+    return clean(raw_id) or f"record-{index:03d}"
+
+
+def build_record(row, index):
+    object_id = normalize_id(row.get("objectid"), index)
+    filename = clean(row.get("filename"))
+    image = f"./objects/{filename}" if filename else "./assets/logo.png"
+    return {
+        "id": object_id,
+        "objectNumber": object_id.upper(),
+        "title": clean(row.get("title")),
+        "creator": clean(row.get("creator")),
+        "date": clean(row.get("date")),
+        "description": clean(row.get("description")),
+        "subject": clean(row.get("subject")),
+        "location": clean(row.get("location")),
+        "latitude": clean(row.get("latitude")),
+        "longitude": clean(row.get("longitude")),
+        "source": clean(row.get("source")),
+        "identifier": clean(row.get("identifier")),
+        "type": clean(row.get("type")),
+        "format": clean(row.get("format")),
+        "language": clean(row.get("language")),
+        "rights": clean(row.get("rights")),
+        "rightsstatement": clean(row.get("rightsstatement")),
+        "catalogCaption": CATALOG_CAPTIONS.get(object_id, ""),
+        "image": image,
+        "recordPath": f"./records/{object_id}.html",
+    }
+
+
+def render_meta_rows(record):
     rows = []
+    for key, label in FIELD_LABELS:
+        value = display_value(record.get(key))
+        rows.append(
+            f"""
+            <div class="record-meta-row">
+              <dt>{escape(label)}</dt>
+              <dd>{escape(value)}</dd>
+            </div>
+            """.strip()
+        )
+
+    if record.get("latitude") and record.get("longitude"):
+        rows.append(
+            f"""
+            <div class="record-meta-row">
+              <dt>Coordinates</dt>
+              <dd>{escape(record["latitude"])}, {escape(record["longitude"])}</dd>
+            </div>
+            """.strip()
+        )
+
+    return "\n".join(rows)
+
+
+def render_record_page(record):
+    title = escape(record["title"] or "Untitled")
+    creator = escape(record["creator"] or "Creator unknown")
+    subject = escape(record["subject"] or "Collection object")
+    image_alt = f"{record['title'] or 'Untitled'} by {record['creator'] or 'Unknown'}"
+    description = escape(record["description"] or "Description not yet available.")
+    catalog_caption = escape(record["catalogCaption"]) if record["catalogCaption"] else ""
+    map_link = ""
+    if record.get("latitude") and record.get("longitude"):
+        map_link = (
+            f'<a class="button button-secondary" '
+            f'href="https://www.google.com/maps?q={escape(record["latitude"])},{escape(record["longitude"])}">'
+            "View associated place"
+            "</a>"
+        )
+
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{title} | JSU Department of Art Permanent Collection</title>
+  <meta
+    name="description"
+    content="Object record for {title} in the Jackson State University Department of Art Permanent Collection."
+  >
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
+  <link rel="icon" href="../favicon.ico">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="record-page">
+  <a class="skip-link" href="#record-main">Skip to record</a>
+  <div class="page-shell">
+    <header class="site-header record-header">
+      <a class="brand" href="../index.html" aria-label="JSU Art home">
+        <img src="../assets/logo.png" alt="JSU Department of Art logo">
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="../index.html#collection">Browse records</a>
+        <a href="../index.html#about">About</a>
+      </nav>
+    </header>
+
+    <main id="record-main" class="record-shell">
+      <section class="record-hero">
+        <div class="record-media-panel">
+          <img src="../{escape(record["image"][2:])}" alt="{escape(image_alt)}">
+        </div>
+        <div class="record-intro">
+          <p class="eyebrow">Object Record</p>
+          <h1>{title}</h1>
+          <p class="record-creator">{creator}</p>
+          <div class="record-summary-grid">
+            <article>
+              <span class="record-summary-label">Object Number</span>
+              <span class="record-summary-value">{escape(record["objectNumber"])}</span>
+            </article>
+            <article>
+              <span class="record-summary-label">Date</span>
+              <span class="record-summary-value">{escape(display_value(record["date"]))}</span>
+            </article>
+            <article>
+              <span class="record-summary-label">Subject</span>
+              <span class="record-summary-value">{subject}</span>
+            </article>
+          </div>
+          <p class="record-description">{description}</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="../index.html#catalog-table">Return to catalog</a>
+            <a class="button button-secondary" href="../_data/jsuart_metadata.csv">Download CSV</a>
+            {map_link}
+          </div>
+        </div>
+      </section>
+
+      <section class="record-detail-grid">
+        <article class="record-panel">
+          <p class="section-label">Catalog Note</p>
+          <h2>Object context</h2>
+          <p>
+            This public-facing record is drawn from the working catalog and supporting collection files
+            maintained for the Jackson State University Department of Art Permanent Collection.
+          </p>
+          <p>{escape(display_value(record["catalogCaption"], "No additional caption note is currently published for this object."))}</p>
+        </article>
+
+        <article class="record-panel">
+          <p class="section-label">Collection Description</p>
+          <h2>Interpretive description</h2>
+          <p>{description}</p>
+        </article>
+      </section>
+
+      <section class="record-metadata">
+        <div>
+          <p class="section-label">Metadata</p>
+          <h2>Catalog fields</h2>
+        </div>
+        <dl class="record-meta-list">
+          {render_meta_rows(record)}
+        </dl>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
+"""
+
+
+def main():
+    records = []
     with SOURCE.open(newline="", encoding="utf-8-sig") as handle:
         reader = csv.DictReader(handle)
-        for row in reader:
-            filename = clean(row.get("filename"))
-            image = f"./objects/{filename}" if filename else "./assets/logo.png"
-            rows.append(
-                {
-                    "id": clean(row.get("objectid")),
-                    "title": clean(row.get("title")),
-                    "creator": clean(row.get("creator")),
-                    "date": clean(row.get("date")),
-                    "description": clean(row.get("description")),
-                    "subject": clean(row.get("subject")),
-                    "location": clean(row.get("location")),
-                    "source": clean(row.get("source")),
-                    "type": clean(row.get("type")),
-                    "format": clean(row.get("format")),
-                    "rights": clean(row.get("rights")),
-                    "rightsstatement": clean(row.get("rightsstatement")),
-                    "catalogCaption": CATALOG_CAPTIONS.get(clean(row.get("objectid")), ""),
-                    "image": image,
-                }
-            )
+        for index, row in enumerate(reader, start=1):
+            records.append(build_record(row, index))
 
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-    OUTPUT.write_text(json.dumps(rows, indent=2, ensure_ascii=True) + "\n")
-    print(f"Wrote {len(rows)} records to {OUTPUT}")
+    OUTPUT.write_text(json.dumps(records, indent=2, ensure_ascii=True) + "\n", encoding="utf-8")
+
+    RECORDS_DIR.mkdir(parents=True, exist_ok=True)
+    for existing in RECORDS_DIR.glob("*.html"):
+        existing.unlink()
+
+    for record in records:
+        output_path = RECORDS_DIR / f"{record['id']}.html"
+        output_path.write_text(render_record_page(record), encoding="utf-8")
+
+    print(f"Wrote {len(records)} records to {OUTPUT} and {RECORDS_DIR}")
 
 
 if __name__ == "__main__":

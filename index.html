@@ -6,7 +6,7 @@
   <title>JSU Department of Art Permanent Collection</title>
   <meta
     name="description"
-    content="Explore the Jackson State University Department of Art Permanent Collection."
+    content="Browse object records from the Jackson State University Department of Art Permanent Collection."
   >
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,7 +25,8 @@
         <img src="./assets/logo.png" alt="JSU Department of Art logo">
       </a>
       <nav class="site-nav" aria-label="Primary">
-        <a href="#collection">Collection</a>
+        <a href="#collection">Browse</a>
+        <a href="#catalog-table">Records</a>
         <a href="#about">About</a>
       </nav>
     </header>
@@ -36,12 +37,12 @@
           <p class="eyebrow">Jackson State University</p>
           <h1>Department of Art Permanent Collection</h1>
           <p class="hero-text">
-            Explore selected works, collection records, and catalog-based context from the
-            Jackson State University Department of Art Permanent Collection.
+            A public records interface for the Jackson State University Department of Art Permanent
+            Collection, designed for research, teaching, stewardship, and object discovery.
           </p>
           <div class="hero-actions">
-            <a class="button button-primary" href="#collection">Browse the Collection</a>
-            <a class="button button-secondary" href="./_data/jsuart_metadata.csv">Download Metadata CSV</a>
+            <a class="button button-primary" href="#catalog-table">Browse object records</a>
+            <a class="button button-secondary" href="./_data/jsuart_metadata.csv">Download metadata CSV</a>
           </div>
         </div>
         <aside class="hero-panel">
@@ -49,11 +50,11 @@
           <div class="stats" id="stats">
             <article>
               <span class="stat-value" id="artwork-count">--</span>
-              <span class="stat-label">Works</span>
+              <span class="stat-label">Object Records</span>
             </article>
             <article>
               <span class="stat-value" id="creator-count">--</span>
-              <span class="stat-label">Creators</span>
+              <span class="stat-label">Named Creators</span>
             </article>
             <article>
               <span class="stat-value" id="subject-count">--</span>
@@ -65,87 +66,133 @@
 
       <section class="controls" id="collection">
         <div>
-          <p class="section-label">Browse</p>
-          <h2>Search the collection</h2>
+          <p class="section-label">Browse Records</p>
+          <h2>Search the collection database</h2>
+          <p class="section-intro">
+            Search across titles, creators, subjects, locations, and descriptions. Each record opens
+            to a stable object page suitable for citation and direct linking.
+          </p>
         </div>
-        <div class="toolbar">
+        <div class="toolbar toolbar-wide">
           <label class="search-field">
-            <span class="visually-hidden">Search the collection</span>
-            <input id="search-input" type="search" placeholder="Search by title, creator, subject, or place">
+            <span>Keyword search</span>
+            <input id="search-input" type="search" placeholder="Search by title, creator, object number, subject, or place">
           </label>
           <label class="filter-field">
-            <span class="visually-hidden">Filter by subject</span>
+            <span>Subject</span>
             <select id="subject-filter">
               <option value="">All subjects</option>
+            </select>
+          </label>
+          <label class="filter-field">
+            <span>Creator</span>
+            <select id="creator-filter">
+              <option value="">All creators</option>
             </select>
           </label>
         </div>
       </section>
 
       <section class="results-bar" aria-live="polite">
-        <p id="results-count">Loading collection...</p>
+        <div>
+          <p id="results-count">Loading collection...</p>
+          <p class="results-note">Grid and table results stay synchronized.</p>
+        </div>
         <label class="filter-field sort-field">
-          <span class="visually-hidden">Sort artworks</span>
+          <span>Sort records</span>
           <select id="sort-select">
-            <option value="title-asc">Sort: Title A-Z</option>
-            <option value="title-desc">Sort: Title Z-A</option>
-            <option value="creator-asc">Sort: Creator A-Z</option>
-            <option value="date-asc">Sort: Date Oldest-Newest</option>
-            <option value="date-desc">Sort: Date Newest-Oldest</option>
+            <option value="title-asc">Title A-Z</option>
+            <option value="title-desc">Title Z-A</option>
+            <option value="creator-asc">Creator A-Z</option>
+            <option value="date-asc">Date Oldest-Newest</option>
+            <option value="date-desc">Date Newest-Oldest</option>
           </select>
         </label>
       </section>
 
-      <section class="gallery" id="gallery"></section>
+      <section class="gallery-section">
+        <div class="section-heading">
+          <div>
+            <p class="section-label">Object Highlights</p>
+            <h2>Visual browse</h2>
+          </div>
+          <p class="section-intro">
+            Use the image grid for rapid scanning, then open any record for fuller catalog details.
+          </p>
+        </div>
+        <section class="gallery" id="gallery" aria-label="Collection highlights"></section>
+      </section>
+
+      <section class="catalog-section" id="catalog-table">
+        <div class="section-heading">
+          <div>
+            <p class="section-label">Catalog Table</p>
+            <h2>Records database</h2>
+          </div>
+          <p class="section-intro">
+            The table below presents the collection as structured records with object numbers,
+            creator attributions, dates, subjects, and associated places.
+          </p>
+        </div>
+        <div class="catalog-table-shell">
+          <table class="catalog-table">
+            <thead>
+              <tr>
+                <th scope="col">Object Number</th>
+                <th scope="col">Title</th>
+                <th scope="col">Creator</th>
+                <th scope="col">Date</th>
+                <th scope="col">Subject</th>
+                <th scope="col">Location</th>
+              </tr>
+            </thead>
+            <tbody id="catalog-body"></tbody>
+          </table>
+        </div>
+      </section>
+
       <section class="empty-state" id="empty-state" hidden aria-live="polite">
         <p class="section-label">No Results</p>
-        <h2>No artworks match this search yet</h2>
-        <p>Try a broader search term, remove the subject filter, or sort the collection differently.</p>
+        <h2>No records match this search</h2>
+        <p>Try a broader search term, remove a filter, or choose a different sort order.</p>
       </section>
 
       <section class="about" id="about">
         <div>
           <p class="section-label">About</p>
-          <h2>A teaching collection, an archive, and a record of Black artistic formation</h2>
+          <h2>A teaching collection, a local archive, and a public record of artistic life</h2>
         </div>
         <p>
-          The Jackson State University Department of Art Permanent Collection was formed through the
-          daily working life of an art department: classrooms, studios, exhibitions, visiting artists,
-          gifts, workshops, and acts of preservation. It reflects the labor of faculty, students,
-          alumni, and community networks who built a visual arts program within the context of an HBCU
-          in Mississippi.
+          The Jackson State University Department of Art Permanent Collection was shaped by faculty
+          practice, student work, visiting artists, gifts, exhibitions, and long-term acts of
+          preservation. This site treats the collection as both an art-historical resource and a
+          documentary record of institutional memory at an HBCU.
         </p>
       </section>
 
       <section class="context">
         <article class="context-card">
-          <p class="section-label">Collection History</p>
-          <h3>More than a conventional museum collection</h3>
+          <p class="section-label">Catalog Practice</p>
+          <h3>Structured for research, not only display</h3>
           <p>
-            The collection includes paintings, prints, ceramics, photographs, works on paper,
-            portraits, graphic works, faculty work, student studies, international prints, and
-            South African works. Its unevenness is part of its meaning: attributed works, unknown
-            makers, fragmentary records, and vulnerable objects all speak to the realities of
-            collection stewardship under unequal conditions.
+            Records expose object numbers, creator attributions, dates, rights statements, and source
+            fields so the public interface behaves more like a museum catalog than a promotional gallery.
           </p>
         </article>
         <article class="context-card">
-          <p class="section-label">Institutional Context</p>
-          <h3>Rooted in Jackson, connected far beyond it</h3>
+          <p class="section-label">Interpretation</p>
+          <h3>Grounded in collection files and catalog documentation</h3>
           <p>
-            Catalog research traces connections among Johnson Hall, Jackson State University,
-            Tougaloo, Memphis, the Mississippi Delta, Black Studies, and broader diasporic and
-            international visual traditions. The collection documents not only artworks, but also
-            the institutional, civic, and pedagogical worlds that shaped them.
+            Descriptions and published notes are derived from the working catalog and supporting local
+            documentation, with the understanding that collection knowledge remains active and revisable.
           </p>
         </article>
         <article class="context-card">
-          <p class="section-label">Documentation</p>
-          <h3>Grounded in the catalog and local research files</h3>
+          <p class="section-label">Public Use</p>
+          <h3>Built for browsing, citation, and stewardship</h3>
           <p>
-            This site draws on local catalog documentation, figure caption audits, and metadata
-            review files assembled for the JSU permanent collection. Public-facing copy here is
-            adapted from those materials to support browsing, teaching, and further research.
+            Stable record pages support sharing and citation, while the CSV and table view make the
+            collection easier to inspect as a body of records rather than only as isolated images.
           </p>
         </article>
       </section>
@@ -153,22 +200,21 @@
       <section class="stewardship">
         <div>
           <p class="section-label">Stewardship</p>
-          <h2>Rights, use, and research</h2>
+          <h2>Rights, access, and record quality</h2>
         </div>
         <p>
-          Artwork records on this site retain the rights statements supplied with the collection
-          metadata. Reproduction, redistribution, and publication may require written permission
-          from the Jackson State University Department of Art. Researchers should treat this site
-          as a public access layer for an actively documented teaching collection rather than a
-          final scholarly catalogue raisonne.
+          Rights statements published here are drawn from the collection metadata and should be read as
+          the governing public guidance for each record. Metadata remains under active review, and this
+          site should be understood as a public access catalog for an actively documented departmental
+          collection rather than a finished scholarly catalog raisonne.
         </p>
       </section>
 
       <footer class="site-footer">
         <p>
-          For permissions, collection questions, or research inquiries, contact the Jackson State
-          University Department of Art. This site publishes selected records and interpretive context
-          from an actively documented departmental collection.
+          For permissions, corrections, object information, or research inquiries, contact the Jackson
+          State University Department of Art. Stable record pages on this site are intended to support
+          discovery, teaching, and responsible public access.
         </p>
       </footer>
     </main>
@@ -176,42 +222,20 @@
 
   <template id="card-template">
     <article class="card">
-      <button class="card-button" type="button">
-      <div class="card-media">
-        <img alt="" loading="lazy">
-      </div>
-      <div class="card-body">
-        <p class="card-kicker"></p>
-        <h3></h3>
-        <p class="card-creator"></p>
-        <p class="card-description"></p>
-        <dl class="card-meta"></dl>
-      </div>
-      </button>
+      <a class="card-link" href="#">
+        <div class="card-media">
+          <img alt="" loading="lazy">
+        </div>
+        <div class="card-body">
+          <p class="card-kicker"></p>
+          <h3></h3>
+          <p class="card-creator"></p>
+          <p class="card-description"></p>
+          <dl class="card-meta"></dl>
+        </div>
+      </a>
     </article>
   </template>
-
-  <dialog
-    class="detail-dialog"
-    id="detail-dialog"
-    aria-labelledby="detail-title"
-    aria-describedby="detail-description"
-  >
-    <button class="detail-close" id="detail-close" type="button" aria-label="Close artwork details">Close</button>
-    <div class="detail-grid">
-      <div class="detail-media">
-        <img id="detail-image" alt="">
-      </div>
-      <div class="detail-copy">
-        <p class="detail-kicker" id="detail-subject"></p>
-        <h2 id="detail-title"></h2>
-        <p class="detail-creator" id="detail-creator"></p>
-        <p class="detail-description" id="detail-description"></p>
-        <p class="detail-caption" id="detail-caption" hidden></p>
-        <dl class="detail-meta" id="detail-meta"></dl>
-      </div>
-    </div>
-  </dialog>
 
   <script src="./app.js" type="module"></script>
 </body>

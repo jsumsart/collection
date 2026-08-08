@@ -1,12 +1,12 @@
 const DATA_URL = "./site-data/artworks.json";
 const gallery = document.querySelector("#gallery");
+const catalogBody = document.querySelector("#catalog-body");
 const resultsCount = document.querySelector("#results-count");
 const searchInput = document.querySelector("#search-input");
 const subjectFilter = document.querySelector("#subject-filter");
+const creatorFilter = document.querySelector("#creator-filter");
 const sortSelect = document.querySelector("#sort-select");
 const cardTemplate = document.querySelector("#card-template");
-const detailDialog = document.querySelector("#detail-dialog");
-const detailClose = document.querySelector("#detail-close");
 const emptyState = document.querySelector("#empty-state");
 
 let artworks = [];
@@ -18,18 +18,22 @@ async function loadArtworks() {
   }
 
   artworks = await response.json();
-  populateSubjectFilter(artworks);
+  populateFilter(subjectFilter, artworks.map((item) => item.subject));
+  populateFilter(creatorFilter, artworks.map((item) => item.creator));
   renderStats(artworks);
-  renderGallery(sortArtworks(artworks));
+  renderCollection();
 }
 
-function populateSubjectFilter(items) {
-  const subjects = [...new Set(items.map((item) => item.subject).filter(Boolean))].sort();
-  for (const subject of subjects) {
+function populateFilter(select, values) {
+  const items = [...new Set(values.filter(Boolean))].sort((left, right) =>
+    left.localeCompare(right, undefined, { sensitivity: "base" })
+  );
+
+  for (const item of items) {
     const option = document.createElement("option");
-    option.value = subject;
-    option.textContent = subject;
-    subjectFilter.append(option);
+    option.value = item;
+    option.textContent = item;
+    select.append(option);
   }
 }
 
@@ -41,11 +45,28 @@ function renderStats(items) {
   document.querySelector("#subject-count").textContent = subjects.size;
 }
 
+function renderCollection() {
+  const filtered = sortArtworks(filterArtworks());
+  renderGallery(filtered);
+  renderTable(filtered);
+  emptyState.hidden = filtered.length !== 0;
+  resultsCount.textContent =
+    filtered.length === 0
+      ? "0 records shown"
+      : `${filtered.length} record${filtered.length === 1 ? "" : "s"} shown`;
+}
+
 function filterArtworks() {
   const query = searchInput.value.trim().toLowerCase();
   const subject = subjectFilter.value;
-  const filtered = artworks.filter((item) => {
+  const creator = creatorFilter.value;
+
+  return artworks.filter((item) => {
     if (subject && item.subject !== subject) {
+      return false;
+    }
+
+    if (creator && item.creator !== creator) {
       return false;
     }
 
@@ -54,19 +75,19 @@ function filterArtworks() {
     }
 
     const haystack = [
+      item.objectNumber,
       item.title,
       item.creator,
       item.subject,
       item.location,
       item.description,
+      item.identifier,
     ]
       .join(" ")
       .toLowerCase();
 
     return haystack.includes(query);
   });
-
-  renderGallery(sortArtworks(filtered));
 }
 
 function sortArtworks(items) {
@@ -98,12 +119,11 @@ function sortArtworks(items) {
 
 function renderGallery(items) {
   gallery.innerHTML = "";
-  emptyState.hidden = items.length !== 0;
   const fragment = document.createDocumentFragment();
 
   for (const item of items) {
     const card = cardTemplate.content.firstElementChild.cloneNode(true);
-    const cardButton = card.querySelector(".card-button");
+    const cardLink = card.querySelector(".card-link");
     const image = card.querySelector("img");
     image.src = item.image;
     image.alt = item.title ? `${item.title} by ${item.creator || "Unknown"}` : "Artwork from the JSU collection";
@@ -112,35 +132,49 @@ function renderGallery(items) {
       image.alt = "JSU Department of Art logo placeholder";
     });
 
-    card.querySelector(".card-kicker").textContent = item.subject || "Collection Work";
+    cardLink.href = item.recordPath;
+    cardLink.setAttribute(
+      "aria-label",
+      `Open record for ${item.title || "Untitled"} by ${item.creator || "Unknown creator"}`
+    );
+
+    card.querySelector(".card-kicker").textContent = item.objectNumber || "Collection Record";
     card.querySelector("h3").textContent = item.title || "Untitled";
     card.querySelector(".card-creator").textContent = item.creator || "Creator unknown";
     card.querySelector(".card-description").textContent = item.description || "Description coming soon.";
 
     const meta = card.querySelector(".card-meta");
     meta.append(
-      metaRow("Date", item.date || "Unknown"),
-      metaRow("Location", item.location || "Unknown"),
-      metaRow("Rights", item.rights || "JSU")
+      metaRow("Date", item.date || "Not recorded"),
+      metaRow("Subject", item.subject || "Not recorded"),
+      metaRow("Location", item.location || "Not recorded"),
+      metaRow("Rights", item.rights || "Not recorded")
     );
-
-    cardButton.setAttribute("aria-label", `Open details for ${item.title || "Untitled"} by ${item.creator || "Unknown creator"}`);
-    cardButton.addEventListener("click", () => openDetail(item));
-    cardButton.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        openDetail(item);
-      }
-    });
 
     fragment.append(card);
   }
 
   gallery.append(fragment);
-  resultsCount.textContent =
-    items.length === 0
-      ? "0 works shown"
-      : `${items.length} work${items.length === 1 ? "" : "s"} shown`;
+}
+
+function renderTable(items) {
+  catalogBody.innerHTML = "";
+  const fragment = document.createDocumentFragment();
+
+  for (const item of items) {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${escapeHtml(item.objectNumber || "Not recorded")}</td>
+      <td><a class="record-table-link" href="${escapeHtml(item.recordPath)}">${escapeHtml(item.title || "Untitled")}</a></td>
+      <td>${escapeHtml(item.creator || "Creator unknown")}</td>
+      <td>${escapeHtml(item.date || "Not recorded")}</td>
+      <td>${escapeHtml(item.subject || "Not recorded")}</td>
+      <td>${escapeHtml(item.location || "Not recorded")}</td>
+    `;
+    fragment.append(row);
+  }
+
+  catalogBody.append(fragment);
 }
 
 function metaRow(label, value) {
@@ -151,42 +185,6 @@ function metaRow(label, value) {
   dd.textContent = value;
   wrapper.append(dt, dd);
   return wrapper;
-}
-
-function openDetail(item) {
-  const detailImage = document.querySelector("#detail-image");
-  detailImage.src = item.image;
-  detailImage.alt = item.title || "Artwork detail";
-  detailImage.onerror = () => {
-    detailImage.src = "./assets/logo.png";
-    detailImage.alt = "JSU Department of Art logo placeholder";
-  };
-  document.querySelector("#detail-subject").textContent = item.subject || "Collection Work";
-  document.querySelector("#detail-title").textContent = item.title || "Untitled";
-  document.querySelector("#detail-creator").textContent = item.creator || "Creator unknown";
-  document.querySelector("#detail-description").textContent = item.description || "Description coming soon.";
-  const detailCaption = document.querySelector("#detail-caption");
-  if (item.catalogCaption) {
-    detailCaption.hidden = false;
-    detailCaption.textContent = item.catalogCaption;
-  } else {
-    detailCaption.hidden = true;
-    detailCaption.textContent = "";
-  }
-
-  const meta = document.querySelector("#detail-meta");
-  meta.innerHTML = "";
-  meta.append(
-    metaRow("Date", item.date || "Unknown"),
-    metaRow("Location", item.location || "Unknown"),
-    metaRow("Source", item.source || "JSU Permanent Collection"),
-    metaRow("Type", formatValue(item.type) || "Still Image"),
-    metaRow("Format", formatValue(item.format) || "Image"),
-    metaRow("Rights", item.rights || "JSU"),
-    metaRow("Rights Statement", item.rightsstatement || "All rights reserved.")
-  );
-
-  detailDialog.showModal();
 }
 
 function compareText(left = "", right = "") {
@@ -202,25 +200,19 @@ function parseYear(value = "") {
   return match ? Number(match[0]) : Number.MAX_SAFE_INTEGER;
 }
 
-function formatValue(value = "") {
-  return value.replaceAll(";", ", ");
+function escapeHtml(value = "") {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
 }
 
-searchInput.addEventListener("input", filterArtworks);
-subjectFilter.addEventListener("change", filterArtworks);
-sortSelect.addEventListener("change", filterArtworks);
-detailClose.addEventListener("click", () => detailDialog.close());
-detailDialog.addEventListener("click", (event) => {
-  const bounds = detailDialog.getBoundingClientRect();
-  const inDialog =
-    bounds.top <= event.clientY &&
-    event.clientY <= bounds.top + bounds.height &&
-    bounds.left <= event.clientX &&
-    event.clientX <= bounds.left + bounds.width;
-  if (!inDialog) {
-    detailDialog.close();
-  }
-});
+searchInput.addEventListener("input", renderCollection);
+subjectFilter.addEventListener("change", renderCollection);
+creatorFilter.addEventListener("change", renderCollection);
+sortSelect.addEventListener("change", renderCollection);
 
 loadArtworks().catch((error) => {
   console.error(error);
