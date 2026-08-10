@@ -2,6 +2,7 @@ import csv
 import json
 from html import escape
 from pathlib import Path
+from urllib.parse import quote
 
 
 SOURCE = Path("_data/jsuart_metadata.csv")
@@ -73,6 +74,10 @@ def normalize_id(raw_id, index):
     return clean(raw_id) or f"record-{index:03d}"
 
 
+def encode_path(path):
+    return quote(path, safe="/.-_")
+
+
 def build_record(row, index):
     object_id = normalize_id(row.get("objectid"), index)
     filename = clean(row.get("filename"))
@@ -97,6 +102,7 @@ def build_record(row, index):
         "rightsstatement": clean(row.get("rightsstatement")),
         "catalogCaption": CATALOG_CAPTIONS.get(object_id, ""),
         "image": image,
+        "imageUrl": encode_path(image),
         "recordPath": f"./records/{object_id}.html",
     }
 
@@ -178,7 +184,7 @@ def render_record_page(record):
     <main id="record-main" class="record-shell">
       <section class="record-hero">
         <div class="record-media-panel">
-          <img src="../{escape(record["image"][2:])}" alt="{escape(image_alt)}">
+          <img src="../{escape(record["imageUrl"][2:])}" alt="{escape(image_alt)}">
         </div>
         <div class="record-intro">
           <p class="eyebrow">Object Record</p>

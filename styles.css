@@ -89,6 +89,8 @@ a {
 .hero,
 .pathways,
 .feature-band,
+.hero-ribbon,
+.browse-lead,
 .page-intro,
 .controls,
 .results-bar,
@@ -107,7 +109,9 @@ a {
 .pathways,
 .gallery,
 .context,
-.record-detail-grid {
+.record-detail-grid,
+.browse-lead,
+.hero-ribbon {
   display: grid;
   gap: 18px;
 }
@@ -321,6 +325,19 @@ h3 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.hero-ribbon {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding: 0 6px;
+}
+
+.hero-ribbon p {
+  margin: 0;
+  padding: 18px 20px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.96rem;
+}
+
 .pathway-card {
   min-height: 100%;
 }
@@ -335,8 +352,60 @@ h3 {
   max-width: 58ch;
 }
 
+#featured-gallery {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+}
+
+#featured-gallery .card {
+  grid-column: span 4;
+}
+
+#featured-gallery .card:nth-child(2),
+#featured-gallery .card:nth-child(7) {
+  grid-column: span 5;
+}
+
+#featured-gallery .card:nth-child(3),
+#featured-gallery .card:nth-child(8) {
+  grid-column: span 3;
+}
+
+#featured-gallery .card:nth-child(1) .card-media,
+#featured-gallery .card:nth-child(4) .card-media,
+#featured-gallery .card:nth-child(7) .card-media {
+  aspect-ratio: 4 / 4.8;
+}
+
 .home-story .about {
   margin-top: 0;
+}
+
+.browse-lead {
+  grid-template-columns: 1.2fr 0.8fr;
+}
+
+.browse-lead-card {
+  padding: 24px;
+  border-radius: 28px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+
+.browse-lead-card p {
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.browse-lead-card-dark {
+  background:
+    linear-gradient(180deg, rgba(13, 42, 86, 0.98), rgba(8, 20, 40, 0.98)),
+    var(--accent);
+}
+
+.browse-lead-card-dark h2,
+.browse-lead-card-dark p {
+  color: #fff;
 }
 
 .toolbar {
@@ -659,7 +728,9 @@ h3 {
   .toolbar-wide,
   .page-intro,
   .feature-band,
-  .record-hero {
+  .record-hero,
+  .browse-lead,
+  .hero-ribbon {
     grid-template-columns: 1fr;
   }
 
@@ -698,6 +769,7 @@ h3 {
   .gallery,
   .context,
   .pathways,
+  #featured-gallery,
   .record-detail-grid,
   .record-meta-list,
   .record-summary-grid {

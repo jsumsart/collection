@@ -64,7 +64,7 @@ function renderStats(items) {
 function selectFeaturedArtworks(items) {
   const withCatalogNotes = items.filter((item) => item.catalogCaption);
   const remaining = items.filter((item) => !item.catalogCaption);
-  return [...withCatalogNotes, ...remaining].slice(0, 6);
+  return [...withCatalogNotes, ...remaining].slice(0, 9);
 }
 
 function renderFeatured(items) {
@@ -184,7 +184,7 @@ function buildCard(item, config) {
   const card = cardTemplate.content.firstElementChild.cloneNode(true);
   const cardLink = card.querySelector(".card-link");
   const image = card.querySelector("img");
-  image.src = item.image;
+  image.src = item.imageUrl || item.image;
   image.alt = item.title ? `${item.title} by ${item.creator || "Unknown"}` : "Artwork from the JSU collection";
   image.addEventListener("error", () => {
     image.src = "./assets/logo.png";
