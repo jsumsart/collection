@@ -1,6 +1,5 @@
 const DATA_URL = "./site-data/artworks.json";
 const gallery = document.querySelector("#gallery");
-const featuredGallery = document.querySelector("#featured-gallery");
 const catalogBody = document.querySelector("#catalog-body");
 const resultsCount = document.querySelector("#results-count");
 const searchInput = document.querySelector("#search-input");
@@ -20,10 +19,6 @@ async function loadArtworks() {
 
   artworks = await response.json();
   renderStats(artworks);
-
-  if (featuredGallery) {
-    renderFeatured(selectFeaturedArtworks(artworks));
-  }
 
   if (subjectFilter && creatorFilter && sortSelect && gallery && catalogBody) {
     populateFilter(subjectFilter, artworks.map((item) => item.subject));
@@ -59,32 +54,6 @@ function renderStats(items) {
   artworkCount.textContent = items.length;
   creatorCount.textContent = creators.size;
   subjectCount.textContent = subjects.size;
-}
-
-function selectFeaturedArtworks(items) {
-  const withCatalogNotes = items.filter((item) => item.catalogCaption);
-  const remaining = items.filter((item) => !item.catalogCaption);
-  return [...withCatalogNotes, ...remaining].slice(0, 9);
-}
-
-function renderFeatured(items) {
-  featuredGallery.innerHTML = "";
-  const fragment = document.createDocumentFragment();
-
-  for (const item of items) {
-    const card = buildCard(item, {
-      kicker: item.subject || "Collection Object",
-      description: item.catalogCaption || item.description || "Description coming soon.",
-      meta: [
-        ["Creator", item.creator || "Creator unknown"],
-        ["Date", item.date || "Not recorded"],
-        ["Object No.", item.objectNumber || "Not recorded"],
-      ],
-    });
-    fragment.append(card);
-  }
-
-  featuredGallery.append(fragment);
 }
 
 function renderCollection() {
