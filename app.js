@@ -1,5 +1,6 @@
 const DATA_URL = "./site-data/artworks.json";
 const gallery = document.querySelector("#gallery");
+const featuredGallery = document.querySelector("#featured-gallery");
 const catalogBody = document.querySelector("#catalog-body");
 const resultsCount = document.querySelector("#results-count");
 const searchInput = document.querySelector("#search-input");
@@ -18,10 +19,17 @@ async function loadArtworks() {
   }
 
   artworks = await response.json();
-  populateFilter(subjectFilter, artworks.map((item) => item.subject));
-  populateFilter(creatorFilter, artworks.map((item) => item.creator));
   renderStats(artworks);
-  renderCollection();
+
+  if (featuredGallery) {
+    renderFeatured(selectFeaturedArtworks(artworks));
+  }
+
+  if (subjectFilter && creatorFilter && sortSelect && gallery && catalogBody) {
+    populateFilter(subjectFilter, artworks.map((item) => item.subject));
+    populateFilter(creatorFilter, artworks.map((item) => item.creator));
+    renderCollection();
+  }
 }
 
 function populateFilter(select, values) {
@@ -38,11 +46,45 @@ function populateFilter(select, values) {
 }
 
 function renderStats(items) {
+  const artworkCount = document.querySelector("#artwork-count");
+  const creatorCount = document.querySelector("#creator-count");
+  const subjectCount = document.querySelector("#subject-count");
+
+  if (!artworkCount || !creatorCount || !subjectCount) {
+    return;
+  }
+
   const creators = new Set(items.map((item) => item.creator).filter(Boolean));
   const subjects = new Set(items.map((item) => item.subject).filter(Boolean));
-  document.querySelector("#artwork-count").textContent = items.length;
-  document.querySelector("#creator-count").textContent = creators.size;
-  document.querySelector("#subject-count").textContent = subjects.size;
+  artworkCount.textContent = items.length;
+  creatorCount.textContent = creators.size;
+  subjectCount.textContent = subjects.size;
+}
+
+function selectFeaturedArtworks(items) {
+  const withCatalogNotes = items.filter((item) => item.catalogCaption);
+  const remaining = items.filter((item) => !item.catalogCaption);
+  return [...withCatalogNotes, ...remaining].slice(0, 6);
+}
+
+function renderFeatured(items) {
+  featuredGallery.innerHTML = "";
+  const fragment = document.createDocumentFragment();
+
+  for (const item of items) {
+    const card = buildCard(item, {
+      kicker: item.subject || "Collection Object",
+      description: item.catalogCaption || item.description || "Description coming soon.",
+      meta: [
+        ["Creator", item.creator || "Creator unknown"],
+        ["Date", item.date || "Not recorded"],
+        ["Object No.", item.objectNumber || "Not recorded"],
+      ],
+    });
+    fragment.append(card);
+  }
+
+  featuredGallery.append(fragment);
 }
 
 function renderCollection() {
@@ -122,39 +164,50 @@ function renderGallery(items) {
   const fragment = document.createDocumentFragment();
 
   for (const item of items) {
-    const card = cardTemplate.content.firstElementChild.cloneNode(true);
-    const cardLink = card.querySelector(".card-link");
-    const image = card.querySelector("img");
-    image.src = item.image;
-    image.alt = item.title ? `${item.title} by ${item.creator || "Unknown"}` : "Artwork from the JSU collection";
-    image.addEventListener("error", () => {
-      image.src = "./assets/logo.png";
-      image.alt = "JSU Department of Art logo placeholder";
+    const card = buildCard(item, {
+      kicker: item.objectNumber || "Collection Record",
+      description: item.description || "Description coming soon.",
+      meta: [
+        ["Date", item.date || "Not recorded"],
+        ["Subject", item.subject || "Not recorded"],
+        ["Location", item.location || "Not recorded"],
+        ["Rights", item.rights || "Not recorded"],
+      ],
     });
-
-    cardLink.href = item.recordPath;
-    cardLink.setAttribute(
-      "aria-label",
-      `Open record for ${item.title || "Untitled"} by ${item.creator || "Unknown creator"}`
-    );
-
-    card.querySelector(".card-kicker").textContent = item.objectNumber || "Collection Record";
-    card.querySelector("h3").textContent = item.title || "Untitled";
-    card.querySelector(".card-creator").textContent = item.creator || "Creator unknown";
-    card.querySelector(".card-description").textContent = item.description || "Description coming soon.";
-
-    const meta = card.querySelector(".card-meta");
-    meta.append(
-      metaRow("Date", item.date || "Not recorded"),
-      metaRow("Subject", item.subject || "Not recorded"),
-      metaRow("Location", item.location || "Not recorded"),
-      metaRow("Rights", item.rights || "Not recorded")
-    );
-
     fragment.append(card);
   }
 
   gallery.append(fragment);
+}
+
+function buildCard(item, config) {
+  const card = cardTemplate.content.firstElementChild.cloneNode(true);
+  const cardLink = card.querySelector(".card-link");
+  const image = card.querySelector("img");
+  image.src = item.image;
+  image.alt = item.title ? `${item.title} by ${item.creator || "Unknown"}` : "Artwork from the JSU collection";
+  image.addEventListener("error", () => {
+    image.src = "./assets/logo.png";
+    image.alt = "JSU Department of Art logo placeholder";
+  });
+
+  cardLink.href = item.recordPath;
+  cardLink.setAttribute(
+    "aria-label",
+    `Open record for ${item.title || "Untitled"} by ${item.creator || "Unknown creator"}`
+  );
+
+  card.querySelector(".card-kicker").textContent = config.kicker;
+  card.querySelector("h3").textContent = item.title || "Untitled";
+  card.querySelector(".card-creator").textContent = item.creator || "Creator unknown";
+  card.querySelector(".card-description").textContent = config.description;
+
+  const meta = card.querySelector(".card-meta");
+  for (const [label, value] of config.meta) {
+    meta.append(metaRow(label, value));
+  }
+
+  return card;
 }
 
 function renderTable(items) {
@@ -209,15 +262,19 @@ function escapeHtml(value = "") {
     .replaceAll("'", "&#39;");
 }
 
-searchInput.addEventListener("input", renderCollection);
-subjectFilter.addEventListener("change", renderCollection);
-creatorFilter.addEventListener("change", renderCollection);
-sortSelect.addEventListener("change", renderCollection);
+if (searchInput && subjectFilter && creatorFilter && sortSelect) {
+  searchInput.addEventListener("input", renderCollection);
+  subjectFilter.addEventListener("change", renderCollection);
+  creatorFilter.addEventListener("change", renderCollection);
+  sortSelect.addEventListener("change", renderCollection);
+}
 
 loadArtworks().catch((error) => {
   console.error(error);
-  resultsCount.textContent = "The collection data could not be loaded.";
-  emptyState.hidden = false;
-  emptyState.querySelector("h2").textContent = "Collection data is temporarily unavailable";
-  emptyState.querySelector("p").textContent = "Please refresh the page or try again later.";
+  if (resultsCount && emptyState) {
+    resultsCount.textContent = "The collection data could not be loaded.";
+    emptyState.hidden = false;
+    emptyState.querySelector("h2").textContent = "Collection data is temporarily unavailable";
+    emptyState.querySelector("p").textContent = "Please refresh the page or try again later.";
+  }
 });

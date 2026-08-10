@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Browse the Collection | JSU Department of Art</title>
+  <meta
+    name="description"
+    content="Browse object records from the Jackson State University Department of Art Permanent Collection."
+  >
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
+  <link rel="icon" href="./favicon.ico">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#collection">Skip to collection</a>
+  <div class="page-shell">
+    <header class="site-header">
+      <a class="brand" href="./index.html" aria-label="JSU Art home">
+        <img src="./assets/logo.png" alt="JSU Department of Art logo">
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="./index.html">Home</a>
+        <a href="./browse.html" aria-current="page">Browse</a>
+        <a href="./about.html">About</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="page-intro">
+        <p class="eyebrow">Browse</p>
+        <h1>Collection records database</h1>
+        <p class="hero-text">
+          Search across titles, creators, subjects, locations, and descriptions. Each record opens
+          to a stable object page suitable for citation and direct linking.
+        </p>
+      </section>
+
+      <section class="controls" id="collection">
+        <div>
+          <p class="section-label">Search Records</p>
+          <h2>Filter the collection</h2>
+          <p class="section-intro">
+            The grid and table stay synchronized so visitors can move between visual browsing and
+            structured records without losing their place.
+          </p>
+        </div>
+        <div class="toolbar toolbar-wide">
+          <label class="search-field">
+            <span>Keyword search</span>
+            <input id="search-input" type="search" placeholder="Search by title, creator, object number, subject, or place">
+          </label>
+          <label class="filter-field">
+            <span>Subject</span>
+            <select id="subject-filter">
+              <option value="">All subjects</option>
+            </select>
+          </label>
+          <label class="filter-field">
+            <span>Creator</span>
+            <select id="creator-filter">
+              <option value="">All creators</option>
+            </select>
+          </label>
+        </div>
+      </section>
+
+      <section class="results-bar" aria-live="polite">
+        <div>
+          <p id="results-count">Loading collection...</p>
+          <p class="results-note">Visual browse and records table are linked views of the same data.</p>
+        </div>
+        <label class="filter-field sort-field">
+          <span>Sort records</span>
+          <select id="sort-select">
+            <option value="title-asc">Title A-Z</option>
+            <option value="title-desc">Title Z-A</option>
+            <option value="creator-asc">Creator A-Z</option>
+            <option value="date-asc">Date Oldest-Newest</option>
+            <option value="date-desc">Date Newest-Oldest</option>
+          </select>
+        </label>
+      </section>
+
+      <section class="gallery-section">
+        <div class="section-heading">
+          <div>
+            <p class="section-label">Visual Browse</p>
+            <h2>Scan the collection</h2>
+          </div>
+          <p class="section-intro">
+            Open any object card to move into the full record page with published metadata.
+          </p>
+        </div>
+        <section class="gallery" id="gallery" aria-label="Collection highlights"></section>
+      </section>
+
+      <section class="catalog-section" id="catalog-table">
+        <div class="section-heading">
+          <div>
+            <p class="section-label">Records Table</p>
+            <h2>Structured object records</h2>
+          </div>
+          <p class="section-intro">
+            Use the table for more database-like browsing across object numbers, attribution, subject,
+            and associated place.
+          </p>
+        </div>
+        <div class="catalog-table-shell">
+          <table class="catalog-table">
+            <thead>
+              <tr>
+                <th scope="col">Object Number</th>
+                <th scope="col">Title</th>
+                <th scope="col">Creator</th>
+                <th scope="col">Date</th>
+                <th scope="col">Subject</th>
+                <th scope="col">Location</th>
+              </tr>
+            </thead>
+            <tbody id="catalog-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="empty-state" id="empty-state" hidden aria-live="polite">
+        <p class="section-label">No Results</p>
+        <h2>No records match this search</h2>
+        <p>Try a broader search term, remove a filter, or choose a different sort order.</p>
+      </section>
+
+      <footer class="site-footer">
+        <p>
+          Need fuller institutional context before browsing? Visit the <a class="inline-link" href="./about.html">About page</a>
+          for collection history, stewardship framing, and public-use guidance.
+        </p>
+      </footer>
+    </main>
+  </div>
+
+  <template id="card-template">
+    <article class="card">
+      <a class="card-link" href="#">
+        <div class="card-media">
+          <img alt="" loading="lazy">
+        </div>
+        <div class="card-body">
+          <p class="card-kicker"></p>
+          <h3></h3>
+          <p class="card-creator"></p>
+          <p class="card-description"></p>
+          <dl class="card-meta"></dl>
+        </div>
+      </a>
+    </article>
+  </template>
+
+  <script src="./app.js" type="module"></script>
+</body>
+</html>

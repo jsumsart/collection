@@ -6,7 +6,7 @@
   <title>JSU Department of Art Permanent Collection</title>
   <meta
     name="description"
-    content="Browse object records from the Jackson State University Department of Art Permanent Collection."
+    content="Public home for the Jackson State University Department of Art Permanent Collection."
   >
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,31 +18,33 @@
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-  <a class="skip-link" href="#collection">Skip to collection</a>
+  <a class="skip-link" href="#home-main">Skip to main content</a>
   <div class="page-shell">
     <header class="site-header">
-      <a class="brand" href="#top" aria-label="JSU Art home">
+      <a class="brand" href="./index.html" aria-label="JSU Art home">
         <img src="./assets/logo.png" alt="JSU Department of Art logo">
       </a>
       <nav class="site-nav" aria-label="Primary">
-        <a href="#collection">Browse</a>
-        <a href="#catalog-table">Records</a>
-        <a href="#about">About</a>
+        <a href="./index.html" aria-current="page">Home</a>
+        <a href="./browse.html">Browse</a>
+        <a href="./about.html">About</a>
       </nav>
     </header>
 
-    <main id="top">
-      <section class="hero">
+    <main id="home-main">
+      <section class="hero hero-home">
         <div class="hero-copy">
           <p class="eyebrow">Jackson State University</p>
-          <h1>Department of Art Permanent Collection</h1>
+          <h1>Art collection, public memory, and object records</h1>
           <p class="hero-text">
-            A public records interface for the Jackson State University Department of Art Permanent
-            Collection, designed for research, teaching, stewardship, and object discovery.
+            The JSU Department of Art Permanent Collection brings together artworks, teaching
+            materials, portraits, prints, and records of artistic life connected to Jackson State
+            University. This site combines museum-style browsing with stable object pages for
+            research, teaching, and stewardship.
           </p>
           <div class="hero-actions">
-            <a class="button button-primary" href="#catalog-table">Browse object records</a>
-            <a class="button button-secondary" href="./_data/jsuart_metadata.csv">Download metadata CSV</a>
+            <a class="button button-primary" href="./browse.html">Browse the collection</a>
+            <a class="button button-secondary" href="./about.html">Learn about the collection</a>
           </div>
         </div>
         <aside class="hero-panel">
@@ -64,157 +66,69 @@
         </aside>
       </section>
 
-      <section class="controls" id="collection">
-        <div>
-          <p class="section-label">Browse Records</p>
-          <h2>Search the collection database</h2>
-          <p class="section-intro">
-            Search across titles, creators, subjects, locations, and descriptions. Each record opens
-            to a stable object page suitable for citation and direct linking.
+      <section class="pathways">
+        <article class="pathway-card">
+          <p class="section-label">Browse</p>
+          <h2>Search the records database</h2>
+          <p>
+            Use filters, keyword search, and the table view to move through the collection as a
+            structured set of records rather than a loose image gallery.
           </p>
-        </div>
-        <div class="toolbar toolbar-wide">
-          <label class="search-field">
-            <span>Keyword search</span>
-            <input id="search-input" type="search" placeholder="Search by title, creator, object number, subject, or place">
-          </label>
-          <label class="filter-field">
-            <span>Subject</span>
-            <select id="subject-filter">
-              <option value="">All subjects</option>
-            </select>
-          </label>
-          <label class="filter-field">
-            <span>Creator</span>
-            <select id="creator-filter">
-              <option value="">All creators</option>
-            </select>
-          </label>
-        </div>
-      </section>
-
-      <section class="results-bar" aria-live="polite">
-        <div>
-          <p id="results-count">Loading collection...</p>
-          <p class="results-note">Grid and table results stay synchronized.</p>
-        </div>
-        <label class="filter-field sort-field">
-          <span>Sort records</span>
-          <select id="sort-select">
-            <option value="title-asc">Title A-Z</option>
-            <option value="title-desc">Title Z-A</option>
-            <option value="creator-asc">Creator A-Z</option>
-            <option value="date-asc">Date Oldest-Newest</option>
-            <option value="date-desc">Date Newest-Oldest</option>
-          </select>
-        </label>
-      </section>
-
-      <section class="gallery-section">
-        <div class="section-heading">
-          <div>
-            <p class="section-label">Object Highlights</p>
-            <h2>Visual browse</h2>
-          </div>
-          <p class="section-intro">
-            Use the image grid for rapid scanning, then open any record for fuller catalog details.
-          </p>
-        </div>
-        <section class="gallery" id="gallery" aria-label="Collection highlights"></section>
-      </section>
-
-      <section class="catalog-section" id="catalog-table">
-        <div class="section-heading">
-          <div>
-            <p class="section-label">Catalog Table</p>
-            <h2>Records database</h2>
-          </div>
-          <p class="section-intro">
-            The table below presents the collection as structured records with object numbers,
-            creator attributions, dates, subjects, and associated places.
-          </p>
-        </div>
-        <div class="catalog-table-shell">
-          <table class="catalog-table">
-            <thead>
-              <tr>
-                <th scope="col">Object Number</th>
-                <th scope="col">Title</th>
-                <th scope="col">Creator</th>
-                <th scope="col">Date</th>
-                <th scope="col">Subject</th>
-                <th scope="col">Location</th>
-              </tr>
-            </thead>
-            <tbody id="catalog-body"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <section class="empty-state" id="empty-state" hidden aria-live="polite">
-        <p class="section-label">No Results</p>
-        <h2>No records match this search</h2>
-        <p>Try a broader search term, remove a filter, or choose a different sort order.</p>
-      </section>
-
-      <section class="about" id="about">
-        <div>
+          <a class="text-link" href="./browse.html">Go to browse</a>
+        </article>
+        <article class="pathway-card">
           <p class="section-label">About</p>
-          <h2>A teaching collection, a local archive, and a public record of artistic life</h2>
-        </div>
-        <p>
-          The Jackson State University Department of Art Permanent Collection was shaped by faculty
-          practice, student work, visiting artists, gifts, exhibitions, and long-term acts of
-          preservation. This site treats the collection as both an art-historical resource and a
-          documentary record of institutional memory at an HBCU.
-        </p>
-      </section>
-
-      <section class="context">
-        <article class="context-card">
-          <p class="section-label">Catalog Practice</p>
-          <h3>Structured for research, not only display</h3>
+          <h2>Read the institutional context</h2>
           <p>
-            Records expose object numbers, creator attributions, dates, rights statements, and source
-            fields so the public interface behaves more like a museum catalog than a promotional gallery.
+            Learn how the collection grew through departmental life, preservation work, and the
+            broader history of art education and Black cultural production at an HBCU.
           </p>
+          <a class="text-link" href="./about.html">Go to about</a>
         </article>
-        <article class="context-card">
-          <p class="section-label">Interpretation</p>
-          <h3>Grounded in collection files and catalog documentation</h3>
+        <article class="pathway-card">
+          <p class="section-label">Data</p>
+          <h2>Download and cite the records</h2>
           <p>
-            Descriptions and published notes are derived from the working catalog and supporting local
-            documentation, with the understanding that collection knowledge remains active and revisable.
+            Stable object pages and CSV metadata support public reference, classroom use, and further
+            catalog development.
           </p>
-        </article>
-        <article class="context-card">
-          <p class="section-label">Public Use</p>
-          <h3>Built for browsing, citation, and stewardship</h3>
-          <p>
-            Stable record pages support sharing and citation, while the CSV and table view make the
-            collection easier to inspect as a body of records rather than only as isolated images.
-          </p>
+          <a class="text-link" href="./_data/jsuart_metadata.csv">Download metadata CSV</a>
         </article>
       </section>
 
-      <section class="stewardship">
-        <div>
-          <p class="section-label">Stewardship</p>
-          <h2>Rights, access, and record quality</h2>
+      <section class="feature-band">
+        <div class="feature-band-copy">
+          <p class="section-label">Collection Focus</p>
+          <h2>Featured objects</h2>
+          <p class="section-intro">
+            A rotating cross-section of portraits, studies, prints, and collection highlights to
+            invite entry before deeper catalog exploration.
+          </p>
         </div>
-        <p>
-          Rights statements published here are drawn from the collection metadata and should be read as
-          the governing public guidance for each record. Metadata remains under active review, and this
-          site should be understood as a public access catalog for an actively documented departmental
-          collection rather than a finished scholarly catalog raisonne.
-        </p>
+        <a class="button button-secondary" href="./browse.html#catalog-table">Open the full records table</a>
+      </section>
+
+      <section class="gallery" id="featured-gallery" aria-label="Featured collection objects"></section>
+
+      <section class="home-story">
+        <div class="about">
+          <div>
+            <p class="section-label">Why This Site</p>
+            <h2>A public-facing museum interface for a teaching collection</h2>
+          </div>
+          <p>
+            Rather than collapsing the collection into a single scrolling page, this site now separates
+            institutional context, browsing, and object-level cataloging. The result is a clearer visitor
+            journey: orientation on the home page, fuller background on the About page, and focused object
+            search on the Browse page.
+          </p>
+        </div>
       </section>
 
       <footer class="site-footer">
         <p>
           For permissions, corrections, object information, or research inquiries, contact the Jackson
-          State University Department of Art. Stable record pages on this site are intended to support
-          discovery, teaching, and responsible public access.
+          State University Department of Art. This public site is designed as an active collection record.
         </p>
       </footer>
     </main>

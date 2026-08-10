@@ -133,7 +133,6 @@ def render_record_page(record):
     subject = escape(record["subject"] or "Collection object")
     image_alt = f"{record['title'] or 'Untitled'} by {record['creator'] or 'Unknown'}"
     description = escape(record["description"] or "Description not yet available.")
-    catalog_caption = escape(record["catalogCaption"]) if record["catalogCaption"] else ""
     map_link = ""
     if record.get("latitude") and record.get("longitude"):
         map_link = (
@@ -170,8 +169,9 @@ def render_record_page(record):
         <img src="../assets/logo.png" alt="JSU Department of Art logo">
       </a>
       <nav class="site-nav" aria-label="Primary">
-        <a href="../index.html#collection">Browse records</a>
-        <a href="../index.html#about">About</a>
+        <a href="../index.html">Home</a>
+        <a href="../browse.html">Browse</a>
+        <a href="../about.html">About</a>
       </nav>
     </header>
 
@@ -200,7 +200,7 @@ def render_record_page(record):
           </div>
           <p class="record-description">{description}</p>
           <div class="hero-actions">
-            <a class="button button-primary" href="../index.html#catalog-table">Return to catalog</a>
+            <a class="button button-primary" href="../browse.html#catalog-table">Return to catalog</a>
             <a class="button button-secondary" href="../_data/jsuart_metadata.csv">Download CSV</a>
             {map_link}
           </div>
