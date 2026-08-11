@@ -135,8 +135,8 @@ a {
 
 .hero,
 .pathways,
-.hero-ribbon,
 .browse-lead,
+.home-intro-grid,
 .page-intro,
 .controls,
 .results-bar,
@@ -157,14 +157,14 @@ a {
 .context,
 .record-detail-grid,
 .browse-lead,
-.hero-ribbon {
+.home-intro-grid {
   display: grid;
   gap: 14px;
 }
 
 .hero {
-  grid-template-columns: minmax(0, 1.45fr) minmax(290px, 0.9fr);
-  gap: 18px;
+  grid-template-columns: 1fr;
+  gap: 16px;
   align-items: stretch;
 }
 
@@ -195,6 +195,10 @@ a {
 .hero-copy,
 .record-intro {
   padding: clamp(24px, 3vw, 40px);
+}
+
+.hero-copy-wide {
+  max-width: 920px;
 }
 
 .hero-panel,
@@ -379,24 +383,6 @@ h3 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.hero-ribbon {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  padding: 0;
-  border-radius: 22px;
-  overflow: hidden;
-  background: linear-gradient(135deg, rgba(0, 18, 71, 0.04), rgba(0, 142, 214, 0.08));
-  border: 1px solid rgba(0, 18, 71, 0.08);
-}
-
-.hero-ribbon p {
-  margin: 0;
-  padding: 20px 22px;
-  border-top: 1px solid transparent;
-  color: var(--accent);
-  font-size: 0.96rem;
-  font-weight: 600;
-}
-
 .pathway-card {
   min-height: 100%;
   background: #fff;
@@ -410,6 +396,23 @@ h3 {
 
 .home-story .about {
   margin-top: 0;
+}
+
+.home-intro-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.home-intro-card {
+  padding: 20px;
+  border-radius: 16px;
+  background: #fff;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+
+.home-intro-card p {
+  color: var(--muted);
+  line-height: 1.8;
 }
 
 .browse-lead {
@@ -787,7 +790,7 @@ h3 {
   .page-intro,
   .record-hero,
   .browse-lead,
-  .hero-ribbon {
+  .home-intro-grid {
     grid-template-columns: 1fr;
   }
 
