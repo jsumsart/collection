@@ -42,16 +42,22 @@ a {
 .skip-link {
   position: absolute;
   left: 16px;
-  top: -48px;
+  top: 16px;
   z-index: 10;
   padding: 12px 16px;
   border-radius: 999px;
   background: var(--accent);
   color: #fff;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(calc(-100% - 16px));
+  transition: transform 140ms ease, opacity 140ms ease;
 }
 
 .skip-link:focus {
-  top: 16px;
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
 }
 
 .page-shell {

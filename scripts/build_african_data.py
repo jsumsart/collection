@@ -38,13 +38,23 @@ def display_value(value, default="Not recorded"):
     return clean(value).replace(";", ", ") or default
 
 
+def normalize_creator_name(value):
+    creator = clean(value)
+    if "," not in creator:
+        return creator
+    parts = [part.strip() for part in creator.split(",") if part.strip()]
+    if len(parts) < 2:
+        return creator
+    return " ".join(parts[1:] + [parts[0]])
+
+
 def encode_path(path):
     return quote(path, safe="/.-_")
 
 
 def display_agent(record):
     if clean(record.get("creator")):
-        return clean(record["creator"])
+        return normalize_creator_name(record["creator"])
     if clean(record.get("culture")):
         return clean(record["culture"])
     if clean(record.get("objectType")):
@@ -61,7 +71,7 @@ def build_record(row, index):
         "objectNumber": clean(row.get("Identifier")) or object_id.upper(),
         "title": clean(row.get("Title")),
         "preferredTerm": clean(row.get("preferred_term")),
-        "creator": clean(row.get("Creator")),
+        "creator": normalize_creator_name(row.get("Creator")),
         "culture": clean(row.get("culture_community")),
         "date": clean(row.get("Date")),
         "timePeriod": clean(row.get("period_dynasty") or row.get("Coverage (time period)")),

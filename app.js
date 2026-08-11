@@ -28,6 +28,25 @@ let featuredWorks = [];
 let featuredIndex = 0;
 let featuredTimer = null;
 
+function normalizeCreatorName(value = "") {
+  const creator = value.trim();
+
+  if (!creator.includes(",")) {
+    return creator;
+  }
+
+  const parts = creator
+    .split(",")
+    .map((part) => part.trim())
+    .filter(Boolean);
+
+  if (parts.length < 2) {
+    return creator;
+  }
+
+  return `${parts.slice(1).join(" ")} ${parts[0]}`.replace(/\s+/g, " ").trim();
+}
+
 function getBrowsableArtworks(items) {
   if (COLLECTION_VARIANT !== "department") {
     return items;
@@ -42,14 +61,14 @@ function getFieldValue(item, fieldName) {
 
 function displayCreator(item) {
   if (COLLECTION_VARIANT === "african") {
-    return item.creator || item.culture || item.objectType || "Maker or culture not recorded";
+    return normalizeCreatorName(item.creator) || item.culture || item.objectType || "Maker or culture not recorded";
   }
 
   if (item.attribution && item.creator) {
-    return `${item.attribution} ${item.creator}`;
+    return `${item.attribution} ${normalizeCreatorName(item.creator)}`;
   }
 
-  return item.creator || "Creator unknown";
+  return normalizeCreatorName(item.creator) || "Creator unknown";
 }
 
 async function loadArtworks() {
@@ -64,7 +83,10 @@ async function loadArtworks() {
 
   if (subjectFilter && creatorFilter && sortSelect && gallery) {
     populateFilter(subjectFilter, artworks.map((item) => getFieldValue(item, subjectFilter.dataset.field || "subject")));
-    populateFilter(creatorFilter, artworks.map((item) => getFieldValue(item, creatorFilter.dataset.field || "creator")));
+    populateFilter(
+      creatorFilter,
+      artworks.map((item) => normalizeCreatorName(getFieldValue(item, creatorFilter.dataset.field || "creator")))
+    );
     renderCollection();
   }
 }
@@ -210,8 +232,11 @@ function filterArtworks() {
       return false;
     }
 
-    if (secondaryValue && getFieldValue(item, secondaryField) !== secondaryValue) {
-      return false;
+    if (secondaryValue) {
+      const creatorValue = normalizeCreatorName(getFieldValue(item, secondaryField));
+      if (creatorValue !== secondaryValue) {
+        return false;
+      }
     }
 
     if (!query) {
@@ -238,7 +263,10 @@ function sortArtworks(items) {
     }
 
     if (mode === "secondary-asc") {
-      return compareText(getFieldValue(left, secondaryField), getFieldValue(right, secondaryField))
+      return compareText(
+        normalizeCreatorName(getFieldValue(left, secondaryField)),
+        normalizeCreatorName(getFieldValue(right, secondaryField))
+      )
         || compareText(left.title, right.title);
     }
 

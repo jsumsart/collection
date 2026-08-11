@@ -82,8 +82,18 @@ def display_value(value, default="Not recorded"):
     return format_value(value) or default
 
 
+def normalize_creator_name(value):
+    creator = clean(value)
+    if "," not in creator:
+        return creator
+    parts = [part.strip() for part in creator.split(",") if part.strip()]
+    if len(parts) < 2:
+        return creator
+    return " ".join(parts[1:] + [parts[0]])
+
+
 def display_creator(record):
-    creator = clean(record.get("creator"))
+    creator = normalize_creator_name(record.get("creator"))
     attribution = clean(record.get("attribution"))
     if creator and attribution:
         return f"{attribution} {creator}"
@@ -108,7 +118,7 @@ def build_record(row, index):
         "id": object_id,
         "objectNumber": clean(row.get("accession_number")) or object_id.upper(),
         "title": clean(row.get("title")),
-        "creator": clean(row.get("creator")),
+        "creator": normalize_creator_name(row.get("creator")),
         "attribution": clean(row.get("attribution")),
         "date": clean(row.get("date")),
         "medium": clean(row.get("medium")),
