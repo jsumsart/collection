@@ -11,15 +11,15 @@ const emptyState = document.querySelector("#empty-state");
 const featuredImage = document.querySelector("#featured-image");
 const featuredPrev = document.querySelector("#featured-prev");
 const featuredNext = document.querySelector("#featured-next");
-const FEATURED_OBJECT_NUMBERS = [
-  "COLL005",
-  "COLL009",
-  "COLL016",
-  "COLL025",
-  "COLL038",
-  "COLL055",
-  "COLL076",
-  "COLL083",
+const FEATURED_RECORD_IDS = [
+  "coll005",
+  "coll009",
+  "coll016",
+  "coll025",
+  "coll038",
+  "coll055",
+  "coll076",
+  "coll083",
 ];
 
 let artworks = [];
@@ -65,9 +65,9 @@ function setupFeaturedWorks(items) {
     return;
   }
 
-  const itemsByObjectNumber = new Map(items.map((item) => [item.objectNumber, item]));
-  const curated = FEATURED_OBJECT_NUMBERS
-    .map((objectNumber) => itemsByObjectNumber.get(objectNumber))
+  const itemsById = new Map(items.map((item) => [item.id, item]));
+  const curated = FEATURED_RECORD_IDS
+    .map((id) => itemsById.get(id))
     .filter((item) => item && (item.imageUrl || item.image));
 
   const fallback = items.filter((item) => item.imageUrl || item.image);

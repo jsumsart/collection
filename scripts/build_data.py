@@ -50,7 +50,7 @@ CATALOG_CAPTIONS = {
 }
 
 FIELD_LABELS = [
-    ("objectNumber", "Object Number"),
+    ("objectNumber", "Accession Number"),
     ("title", "Title"),
     ("creator", "Creator"),
     ("attribution", "Attribution"),
@@ -106,7 +106,7 @@ def build_record(row, index):
     image = f"./objects/{filename}" if filename else "./assets/logo.png"
     return {
         "id": object_id,
-        "objectNumber": object_id.upper(),
+        "objectNumber": clean(row.get("accession_number")) or object_id.upper(),
         "title": clean(row.get("title")),
         "creator": clean(row.get("creator")),
         "attribution": clean(row.get("attribution")),
@@ -190,7 +190,7 @@ def render_record_page(record):
     rel="stylesheet"
   >
   <link rel="icon" href="../favicon.ico">
-  <link rel="stylesheet" href="../styles.css?v=20260811o">
+  <link rel="stylesheet" href="../styles.css?v=20260811p">
 </head>
 <body class="record-page">
   <a class="skip-link" href="#record-main">Skip to record</a>
@@ -222,7 +222,7 @@ def render_record_page(record):
           <p class="record-creator">{creator}</p>
           <div class="record-summary-grid">
             <article>
-              <span class="record-summary-label">Object Number</span>
+              <span class="record-summary-label">Accession Number</span>
               <span class="record-summary-value">{escape(record["objectNumber"])}</span>
             </article>
             <article>
