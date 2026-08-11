@@ -121,16 +121,6 @@ def render_meta_rows(record):
             """.strip()
         )
 
-    if record.get("latitude") and record.get("longitude"):
-        rows.append(
-            f"""
-            <div class="record-meta-row">
-              <dt>Coordinates</dt>
-              <dd>{escape(record["latitude"])}, {escape(record["longitude"])}</dd>
-            </div>
-            """.strip()
-        )
-
     return "\n".join(rows)
 
 
@@ -144,15 +134,6 @@ def render_record_page(record):
         if has_public_value(record.get("attributionConfidence"))
         else ""
     )
-    map_link = ""
-    if record.get("latitude") and record.get("longitude"):
-        map_link = (
-            f'<a class="button button-secondary" '
-            f'href="https://www.google.com/maps?q={escape(record["latitude"])},{escape(record["longitude"])}">'
-            "View associated place"
-            "</a>"
-        )
-
     summary_items = [
         ("Object Number", record["objectNumber"]),
         ("Date", record.get("date")),
@@ -238,7 +219,6 @@ def render_record_page(record):
           {description_markup}
           <div class="hero-actions">
             <a class="button button-primary" href="../african-art.html">Return to African Art browse</a>
-            {map_link}
           </div>
         </div>
       </section>

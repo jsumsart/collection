@@ -349,6 +349,10 @@ function buildCard(item, config) {
   const card = cardTemplate.content.firstElementChild.cloneNode(true);
   const cardLink = card.querySelector(".card-link");
   const image = card.querySelector("img");
+  const titleElement = card.querySelector("h3");
+  const creatorElement = card.querySelector(".card-creator");
+  const description = card.querySelector(".card-description");
+  const meta = card.querySelector(".card-meta");
   image.src = item.imageUrl || item.image;
   image.alt = item.title ? `${item.title} by ${displayCreator(item)}` : "Artwork from the JSU collection";
   image.addEventListener("error", () => {
@@ -356,28 +360,67 @@ function buildCard(item, config) {
     image.alt = "JSU Department of Art logo placeholder";
   });
 
-  cardLink.href = item.recordPath;
-  cardLink.setAttribute(
-    "aria-label",
-    `Open record for ${item.title || "Untitled"} by ${displayCreator(item)}`
-  );
+  if (COLLECTION_VARIANT === "african") {
+    const staticCard = document.createElement("div");
+    staticCard.className = "card-link card-link-static";
+    while (cardLink.firstChild) {
+      staticCard.append(cardLink.firstChild);
+    }
+    cardLink.replaceWith(staticCard);
+  } else {
+    cardLink.href = item.recordPath;
+    cardLink.setAttribute(
+      "aria-label",
+      `Open record for ${item.title || "Untitled"} by ${displayCreator(item)}`
+    );
+  }
 
   card.querySelector(".card-kicker").textContent = config.kicker;
-  card.querySelector("h3").textContent = item.title || "Untitled";
-  card.querySelector(".card-creator").textContent = displayCreator(item);
-  const description = card.querySelector(".card-description");
-  description.remove();
+  titleElement.textContent = item.title || "Untitled";
+  creatorElement.textContent = displayCreator(item);
 
-  const meta = card.querySelector(".card-meta");
-  const compactMeta = config.meta.filter(hasDisplayValue);
+  if (COLLECTION_VARIANT === "african") {
+    if (hasDisplayValue(item.description)) {
+      description.textContent = item.description;
+    } else {
+      description.remove();
+    }
 
-  if (compactMeta.length) {
-    const summary = document.createElement("p");
-    summary.className = "card-summary";
-    summary.textContent = compactMeta.join(" | ");
-    meta.replaceWith(summary);
+    const detailPairs = [
+      ["Date", item.date],
+      ["Culture / Community", item.culture],
+      ["Object Type", item.objectType],
+      ["Materials", item.materials],
+      ["Geographic Location", item.location],
+    ].filter(([, value]) => hasDisplayValue(value));
+
+    if (detailPairs.length) {
+      meta.innerHTML = detailPairs
+        .map(
+          ([label, value]) => `
+            <div>
+              <dt>${escapeHtml(label)}</dt>
+              <dd>${escapeHtml(value)}</dd>
+            </div>
+          `
+        )
+        .join("");
+    } else {
+      meta.remove();
+    }
   } else {
-    meta.remove();
+    description.remove();
+
+    const compactMeta = config.meta.filter(hasDisplayValue);
+
+    if (compactMeta.length) {
+      const summary = document.createElement("p");
+      summary.className = "card-summary";
+      summary.textContent = compactMeta.join(" | ");
+      meta.replaceWith(summary);
+    } else {
+      meta.remove();
+    }
   }
 
   return card;

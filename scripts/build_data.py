@@ -8,6 +8,8 @@ from urllib.parse import quote
 SOURCE = Path("_data/jsuart_metadata.csv")
 OUTPUT = Path("site-data/artworks.json")
 RECORDS_DIR = Path("records")
+PUBLIC_BASE_URL = "https://jsumsart.github.io/collection"
+COLLECTION_NAME = "Jackson State University Department of Art Permanent Collection"
 
 CATALOG_CAPTIONS = {
     "coll001": "Creator not presently known, Nineteenth-Century African American Portrait, n.d. Medium unknown, 19.6 x 15 in.",
@@ -50,23 +52,14 @@ CATALOG_CAPTIONS = {
 }
 
 FIELD_LABELS = [
-    ("objectNumber", "Accession Number"),
+    ("creator", "Artist / Maker"),
     ("title", "Title"),
-    ("creator", "Creator"),
-    ("attribution", "Attribution"),
     ("date", "Date"),
     ("medium", "Medium"),
     ("dimensions", "Dimensions"),
-    ("edition", "Edition"),
-    ("subject", "Subject"),
-    ("location", "Associated Place"),
-    ("identifier", "Identifier"),
-    ("source", "Source"),
-    ("type", "Type"),
-    ("format", "Format"),
-    ("language", "Language"),
-    ("rights", "Rights"),
-    ("rightsstatement", "Rights Statement"),
+    ("objectNumber", "Accession Number"),
+    ("collection", "Collection"),
+    ("subject", "Subject / Keywords"),
 ]
 
 UNKNOWN_CREATOR_LABEL = "Creator not presently known"
@@ -115,6 +108,93 @@ def display_creator(record):
     return UNKNOWN_CREATOR_LABEL
 
 
+def object_information_rows(record):
+    rows = []
+    for key, label in FIELD_LABELS:
+        value = record.get(key)
+        if has_public_value(value):
+            rows.append((label, format_value(value)))
+    rows.append(("Acquisition Information", "Not yet documented."))
+    return rows
+
+
+def render_object_information(record):
+    rows = []
+    for label, value in object_information_rows(record):
+        rows.append(
+            f"""
+            <div class="record-meta-row">
+              <dt>{escape(label)}</dt>
+              <dd>{escape(value)}</dd>
+            </div>
+            """.strip()
+        )
+    return "\n".join(rows)
+
+
+def build_research_note(record):
+    note_parts = []
+    creator = display_creator(record)
+    if creator == UNKNOWN_CREATOR_LABEL:
+        note_parts.append("The creator is not presently known.")
+    if has_public_value(record.get("attribution")):
+        note_parts.append("The current attribution reflects the existing departmental catalog and may be refined through further research.")
+    if has_public_value(record.get("date")):
+        date_value = format_value(record.get("date"))
+        if date_value.lower() == "n.d.":
+            note_parts.append("A date for the work has not yet been documented.")
+        elif date_value.lower().startswith("c."):
+            note_parts.append("The date is approximate.")
+
+    note_parts.append("The title, attribution, date, and medium shown here reflect current collection documentation.")
+    note_parts.append("Additional research into collection history, acquisition, and related scholarship is ongoing.")
+    return " ".join(note_parts)
+
+
+def build_about_text(record):
+    title = format_value(record.get("title")) or "This work"
+    creator = display_creator(record)
+    if creator == UNKNOWN_CREATOR_LABEL:
+        return (
+            f"{title} is part of the {COLLECTION_NAME}. "
+            "Research into the work, its context, and its collection history is ongoing."
+        )
+    return (
+        f"{title} by {creator} is part of the {COLLECTION_NAME}. "
+        "Research into the work, its context, and its collection history is ongoing."
+    )
+
+
+def build_rights_text(record):
+    rights_holder = format_value(record.get("rights")) or "the Jackson State University Department of Art"
+    return {
+        "copyright_status": "Copyright status has not yet been determined.",
+        "digital_image": f"Digital image courtesy of {COLLECTION_NAME}.",
+        "reproduction": f"For information concerning image use and reproduction, contact {rights_holder}.",
+    }
+
+
+def build_citation(record):
+    parts = []
+    creator = display_creator(record)
+    title = format_value(record.get("title"))
+    date = format_value(record.get("date"))
+    medium = format_value(record.get("medium"))
+    accession = format_value(record.get("objectNumber"))
+    if creator:
+        parts.append(creator)
+    if title:
+        parts.append(title)
+    if date:
+        parts.append(date)
+    if medium:
+        parts.append(medium)
+    parts.append(COLLECTION_NAME)
+    if accession:
+        parts.append(accession)
+    return ", ".join(parts) + "."
+
+
 def normalize_id(raw_id, index):
     return clean(raw_id) or f"record-{index:03d}"
 
@@ -149,6 +229,7 @@ def build_record(row, index):
         "language": clean(row.get("language")),
         "rights": clean(row.get("rights")),
         "rightsstatement": clean(row.get("rightsstatement")),
+        "collection": COLLECTION_NAME,
         "catalogCaption": CATALOG_CAPTIONS.get(object_id, ""),
         "image": image,
         "imageUrl": encode_path(image),
@@ -156,54 +237,22 @@ def build_record(row, index):
     }
 
 
-def render_meta_rows(record):
-    rows = []
-    for key, label in FIELD_LABELS:
-        if not has_public_value(record.get(key)):
-            continue
-        value = format_value(record.get(key))
-        rows.append(
-            f"""
-            <div class="record-meta-row">
-              <dt>{escape(label)}</dt>
-              <dd>{escape(value)}</dd>
-            </div>
-            """.strip()
-        )
-
-    if record.get("latitude") and record.get("longitude"):
-        rows.append(
-            f"""
-            <div class="record-meta-row">
-              <dt>Coordinates</dt>
-              <dd>{escape(record["latitude"])}, {escape(record["longitude"])}</dd>
-            </div>
-            """.strip()
-        )
-
-    return "\n".join(rows)
-
-
 def render_record_page(record):
     title = escape(record["title"] or "Untitled")
     creator = escape(display_creator(record))
     image_alt = f"{record['title'] or 'Untitled'} by {display_creator(record)}"
     description = escape(record["description"]) if has_public_value(record.get("description")) else ""
-    catalog_caption = escape(format_value(record["catalogCaption"])) if has_public_value(record.get("catalogCaption")) else ""
-    map_link = ""
-    if record.get("latitude") and record.get("longitude"):
-        map_link = (
-            f'<a class="button button-secondary" '
-            f'href="https://www.google.com/maps?q={escape(record["latitude"])},{escape(record["longitude"])}">'
-            "View associated place"
-            "</a>"
-        )
+    rights = build_rights_text(record)
+    citation = escape(build_citation(record))
+    citation_url = f"{PUBLIC_BASE_URL}/records/{record['id']}.html"
+    about_text = escape(build_about_text(record))
+    research_note = escape(build_research_note(record))
 
     summary_items = [
-        ("Accession Number", record["objectNumber"]),
         ("Date", record.get("date")),
         ("Medium", record.get("medium")),
         ("Dimensions", record.get("dimensions")),
+        ("Accession Number", record["objectNumber"]),
     ]
     summary_markup = "\n".join(
         f"""
@@ -216,13 +265,11 @@ def render_record_page(record):
         if has_public_value(value)
     )
 
-    description_markup = f'<p class="record-description">{description}</p>' if description else ""
-    context_markup = f"<p>{catalog_caption}</p>" if catalog_caption else ""
     description_panel = (
         f"""
         <article class="record-panel">
-          <p class="section-label">Collection Description</p>
-          <h2>Interpretive description</h2>
+          <p class="section-label">Description</p>
+          <h2>Object description</h2>
           <p>{description}</p>
         </article>
         """.strip()
@@ -247,7 +294,7 @@ def render_record_page(record):
     rel="stylesheet"
   >
   <link rel="icon" href="../favicon.ico">
-  <link rel="stylesheet" href="../styles.css?v=20260811s">
+  <link rel="stylesheet" href="../styles.css?v=20260811z">
   <script src="../image-protection.js?v=20260811c" defer></script>
 </head>
 <body class="record-page">
@@ -281,36 +328,63 @@ def render_record_page(record):
           <div class="record-summary-grid">
             {summary_markup}
           </div>
-          {description_markup}
           <div class="hero-actions">
-            <a class="button button-primary" href="../browse.html">Return to catalog</a>
-            {map_link}
+            <a class="button button-primary" href="../browse.html">Back to Collection</a>
           </div>
         </div>
       </section>
 
       <section class="record-detail-grid">
-        <article class="record-panel">
-          <p class="section-label">Catalog Note</p>
-          <h2>Object context</h2>
-          <p>
-            This public-facing record is drawn from the working catalog and supporting collection files
-            maintained for the Jackson State University Department of Art Permanent Collection.
-          </p>
-          {context_markup}
-        </article>
-
         {description_panel}
+        <article class="record-panel">
+          <p class="section-label">About the Work</p>
+          <h2>Collection context</h2>
+          <p>{about_text}</p>
+        </article>
       </section>
 
       <section class="record-metadata">
         <div>
-          <p class="section-label">Metadata</p>
-          <h2>Catalog fields</h2>
+          <p class="section-label">Object Information</p>
+          <h2>Recorded object details</h2>
         </div>
         <dl class="record-meta-list">
-          {render_meta_rows(record)}
+          {render_object_information(record)}
         </dl>
+      </section>
+
+      <section class="record-detail-grid">
+        <article class="record-panel">
+          <p class="section-label">Research Notes</p>
+          <h2>Current state of research</h2>
+          <p>{research_note}</p>
+        </article>
+
+        <article class="record-panel">
+          <p class="section-label">Rights and Reproduction</p>
+          <h2>Use and permissions</h2>
+          <p><strong>Copyright status:</strong> {escape(rights["copyright_status"])}</p>
+          <p>{escape(rights["digital_image"])}</p>
+          <p>{escape(rights["reproduction"])}</p>
+        </article>
+      </section>
+
+      <section class="record-detail-grid">
+        <article class="record-panel">
+          <p class="section-label">Cite This Record</p>
+          <h2>Suggested citation</h2>
+          <p>{citation}</p>
+          <p><a class="inline-link" href="{citation_url}">{citation_url}</a></p>
+        </article>
+
+        <article class="record-panel">
+          <p class="section-label">Digital Collection Project</p>
+          <h2>Project credit</h2>
+          <p>
+            Digitization and database development led by Dr. Brittany Myburgh and Dr. Detrice Roberts,
+            with support from the Africana Digital Humanities Lab at Jackson State University.
+          </p>
+        </article>
       </section>
     </main>
   </div>
