@@ -10,8 +10,8 @@ OUTPUT = Path("site-data/artworks.json")
 RECORDS_DIR = Path("records")
 
 CATALOG_CAPTIONS = {
-    "coll001": "Artist unknown, Nineteenth-Century African American Portrait, n.d. Medium unknown, 19.6 x 15 in.",
-    "coll002": "Artist unknown, Nineteenth-Century African American Portrait, n.d. Medium unknown, 19.6 x 15 in.",
+    "coll001": "Creator not presently known, Nineteenth-Century African American Portrait, n.d. Medium unknown, 19.6 x 15 in.",
+    "coll002": "Creator not presently known, Nineteenth-Century African American Portrait, n.d. Medium unknown, 19.6 x 15 in.",
     "coll003": "Karl Griffin, Juanita, n.d. Oil on canvas, 31.5 x 23.5 in.",
     "coll004": "Thomas E. Eloby II, Self-Portrait, 1968. Ink on paper, 6.25 x 8.25 in.",
     "coll005": "Thomas E. Eloby II, Landscape, n.d. Oil on canvas, 36 x 24 in.",
@@ -69,9 +69,18 @@ FIELD_LABELS = [
     ("rightsstatement", "Rights Statement"),
 ]
 
+UNKNOWN_CREATOR_LABEL = "Creator not presently known"
+
 
 def clean(value):
     return " ".join((value or "").split())
+
+
+def normalize_unknown_creator(value):
+    cleaned = clean(value)
+    if cleaned.lower() in {"unknown", "creator unknown"}:
+        return UNKNOWN_CREATOR_LABEL
+    return cleaned
 
 
 def format_value(value):
@@ -87,7 +96,7 @@ def has_public_value(value):
 
 
 def normalize_creator_name(value):
-    creator = clean(value)
+    creator = normalize_unknown_creator(value)
     if "," not in creator:
         return creator
     parts = [part.strip() for part in creator.split(",") if part.strip()]
@@ -103,7 +112,7 @@ def display_creator(record):
         return f"{attribution} {creator}"
     if creator:
         return creator
-    return "Creator unknown"
+    return UNKNOWN_CREATOR_LABEL
 
 
 def normalize_id(raw_id, index):

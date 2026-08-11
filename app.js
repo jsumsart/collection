@@ -30,6 +30,7 @@ const FEATURED_IMAGE_OVERRIDES = {
   coll076: "./assets/featured/coll076.png?v=20260811d",
   coll083: "./assets/featured/coll083.png?v=20260811d",
 };
+const UNKNOWN_CREATOR_LABEL = "Creator not presently known";
 
 let artworks = [];
 let featuredWorks = [];
@@ -38,6 +39,10 @@ let featuredTimer = null;
 
 function normalizeCreatorName(value = "") {
   const creator = value.trim();
+
+  if (creator.toLowerCase() === "unknown" || creator.toLowerCase() === "creator unknown") {
+    return UNKNOWN_CREATOR_LABEL;
+  }
 
   if (!creator.includes(",")) {
     return creator;
@@ -80,7 +85,7 @@ function displayCreator(item) {
     return `${item.attribution} ${normalizeCreatorName(item.creator)}`;
   }
 
-  return normalizeCreatorName(item.creator) || "Creator unknown";
+  return normalizeCreatorName(item.creator) || UNKNOWN_CREATOR_LABEL;
 }
 
 async function loadArtworks() {
@@ -267,25 +272,32 @@ function sortArtworks(items) {
   const mode = sortSelect.value;
   const secondaryField = creatorFilter?.dataset.field || "creator";
 
+  function compareSecondary(left, right, descending = false) {
+    const leftValue = normalizeCreatorName(getFieldValue(left, secondaryField));
+    const rightValue = normalizeCreatorName(getFieldValue(right, secondaryField));
+    const leftUnknown = !leftValue || leftValue === UNKNOWN_CREATOR_LABEL;
+    const rightUnknown = !rightValue || rightValue === UNKNOWN_CREATOR_LABEL;
+
+    if (leftUnknown !== rightUnknown) {
+      return leftUnknown ? 1 : -1;
+    }
+
+    return descending
+      ? compareText(rightValue, leftValue) || compareText(left.title, right.title)
+      : compareText(leftValue, rightValue) || compareText(left.title, right.title);
+  }
+
   sorted.sort((left, right) => {
     if (mode === "title-desc") {
       return compareText(right.title, left.title);
     }
 
     if (mode === "secondary-asc") {
-      return compareText(
-        normalizeCreatorName(getFieldValue(left, secondaryField)),
-        normalizeCreatorName(getFieldValue(right, secondaryField))
-      )
-        || compareText(left.title, right.title);
+      return compareSecondary(left, right, false);
     }
 
     if (mode === "secondary-desc") {
-      return compareText(
-        normalizeCreatorName(getFieldValue(right, secondaryField)),
-        normalizeCreatorName(getFieldValue(left, secondaryField))
-      )
-        || compareText(left.title, right.title);
+      return compareSecondary(left, right, true);
     }
 
     if (mode === "date-asc") {
