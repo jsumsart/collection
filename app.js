@@ -12,7 +12,6 @@ const featuredImage = document.querySelector("#featured-image");
 const featuredPrev = document.querySelector("#featured-prev");
 const featuredNext = document.querySelector("#featured-next");
 const FEATURED_RECORD_IDS = [
-  "coll005",
   "coll046",
   "coll016",
   "coll025",
@@ -213,9 +212,7 @@ function renderCollection() {
   renderGallery(filtered);
   emptyState.hidden = filtered.length !== 0;
   resultsCount.textContent =
-    filtered.length === 0
-      ? "0 records shown"
-      : `${filtered.length} record${filtered.length === 1 ? "" : "s"} shown`;
+    "Use the search and filters above to refine the records displayed below.";
 }
 
 function filterArtworks() {
@@ -279,6 +276,14 @@ function sortArtworks(items) {
       return compareText(
         normalizeCreatorName(getFieldValue(left, secondaryField)),
         normalizeCreatorName(getFieldValue(right, secondaryField))
+      )
+        || compareText(left.title, right.title);
+    }
+
+    if (mode === "secondary-desc") {
+      return compareText(
+        normalizeCreatorName(getFieldValue(right, secondaryField)),
+        normalizeCreatorName(getFieldValue(left, secondaryField))
       )
         || compareText(left.title, right.title);
     }

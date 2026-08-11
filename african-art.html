@@ -15,7 +15,7 @@
     rel="stylesheet"
   >
   <link rel="icon" href="./favicon.ico">
-  <link rel="stylesheet" href="./styles.css?v=20260811v">
+  <link rel="stylesheet" href="./styles.css?v=20260811w">
 </head>
 <body class="browse-page browse-page-african" data-collection-data-url="./site-data/african-artworks.json" data-collection-variant="african">
   <a class="skip-link" href="#collection">Skip to collection</a>
@@ -50,26 +50,27 @@
       </section>
 
       <section class="collection-switcher" aria-label="Collection browse switcher">
-        <a class="collection-switcher-link" href="./browse.html">Department Collection</a>
+        <a class="collection-switcher-link" href="./browse.html">Department of Art Collection</a>
         <a class="collection-switcher-link is-active" href="./african-art.html">African Art Collection</a>
       </section>
 
       <section class="controls" id="collection">
         <div>
-          <p class="section-label">Search Records</p>
-          <h2>Refine the record wall</h2>
+          <p class="section-label">Search the Collection</p>
+          <h2>Find and filter records</h2>
           <p class="section-intro">
-            Keyword search scans titles, cultures, materials, places, and descriptive text so the
-            collection can be explored visually and contextually.
+            Search the collection by artist, title, culture, place, or keyword, then use the
+            filters to narrow your results. Collection records reflect current research and may be
+            updated as additional information becomes available.
           </p>
         </div>
         <div class="toolbar toolbar-wide">
           <label class="search-field">
-            <span>Keyword search</span>
-            <input id="search-input" type="search" placeholder="Search by title, culture, object type, material, or place">
+            <span>Artist or keyword</span>
+            <input id="search-input" type="search" placeholder="Search by title, artist, culture, place, or keyword">
           </label>
           <label class="filter-field">
-            <span>Object type</span>
+            <span>Object type / medium</span>
             <select id="subject-filter" data-field="objectType">
               <option value="">All object types</option>
             </select>
@@ -85,17 +86,16 @@
 
       <section class="results-bar" aria-live="polite">
         <div>
-          <p id="results-count">Loading collection...</p>
-          <p class="results-note">Filter the cards by keyword, object type, culture/community, or date order.</p>
+          <p id="results-count">Use the search and filters above to refine the records displayed below.</p>
         </div>
         <label class="filter-field sort-field">
-          <span>Sort records</span>
+          <span>Sort by</span>
           <select id="sort-select">
+            <option value="secondary-asc">Artist A-Z</option>
+            <option value="secondary-desc">Artist Z-A</option>
             <option value="title-asc">Title A-Z</option>
-            <option value="title-desc">Title Z-A</option>
-            <option value="secondary-asc">Culture A-Z</option>
-            <option value="date-asc">Date Oldest-Newest</option>
-            <option value="date-desc">Date Newest-Oldest</option>
+            <option value="date-asc">Date: earliest first</option>
+            <option value="date-desc">Date: most recent first</option>
           </select>
         </label>
       </section>
@@ -103,12 +103,12 @@
       <section class="gallery-section">
         <div class="section-heading">
           <div>
-            <p class="section-label">African Art Records</p>
-            <h2>Public object records</h2>
+            <p class="section-label">All Records</p>
+            <h2>Collection Records</h2>
           </div>
           <p class="section-intro">
-            Each card is a compact public-facing record with image, culture/community, place, and
-            object type.
+            Browse individual works from the collection. Each record brings together available
+            object information, attribution, images, and related research documentation.
           </p>
         </div>
         <section class="gallery gallery-records" id="gallery" aria-label="African Art collection records"></section>
@@ -147,6 +147,6 @@
   </template>
 
   <script src="./image-protection.js?v=20260811c" defer></script>
-  <script src="./app.js?v=20260811x" type="module"></script>
+  <script src="./app.js?v=20260811y" type="module"></script>
 </body>
 </html>

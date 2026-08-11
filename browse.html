@@ -15,7 +15,7 @@
     rel="stylesheet"
   >
   <link rel="icon" href="./favicon.ico">
-  <link rel="stylesheet" href="./styles.css?v=20260811v">
+  <link rel="stylesheet" href="./styles.css?v=20260811w">
 </head>
 <body class="browse-page" data-collection-data-url="./site-data/artworks.json" data-collection-variant="department">
   <a class="skip-link" href="#collection">Skip to collection</a>
@@ -40,32 +40,34 @@
       <section class="page-intro page-intro-plain browse-page-intro">
         <div class="browse-page-intro-copy">
           <p class="eyebrow">Browse</p>
-          <h1>Browse the collection</h1>
+          <h1>Explore the Collection</h1>
         </div>
         <p class="hero-text">
-          Search across titles, creators, subjects, locations, and descriptions. Each record opens
-          to a stable object page suitable for citation and direct linking.
+          Search artworks and collection records by artist, title, subject, medium, date, or
+          keyword. Select any record to view images, object information, and available research
+          documentation.
         </p>
       </section>
 
       <section class="collection-switcher" aria-label="Collection browse switcher">
-        <a class="collection-switcher-link is-active" href="./browse.html">Department Collection</a>
+        <a class="collection-switcher-link is-active" href="./browse.html">Department of Art Collection</a>
         <a class="collection-switcher-link" href="./african-art.html">African Art Collection</a>
       </section>
 
       <section class="controls" id="collection">
         <div>
-          <p class="section-label">Search Records</p>
-          <h2>Refine the record wall</h2>
+          <p class="section-label">Search the Collection</p>
+          <h2>Find and filter records</h2>
           <p class="section-intro">
-            Use artist, subject, and creator filters to move through the published collection more
-            quickly.
+            Search the collection by artist or keyword, then use the filters to narrow your
+            results. Collection records reflect current research and may be updated as additional
+            information becomes available.
           </p>
         </div>
         <div class="toolbar toolbar-wide">
           <label class="search-field">
-            <span>Artist name</span>
-            <input id="search-input" type="search" placeholder="Search by artist name">
+            <span>Artist or keyword</span>
+            <input id="search-input" type="search" placeholder="Search by artist, title, or keyword">
           </label>
           <label class="filter-field">
             <span>Subject</span>
@@ -84,17 +86,16 @@
 
       <section class="results-bar" aria-live="polite">
         <div>
-          <p id="results-count">Loading collection...</p>
-          <p class="results-note">Filter the cards by keyword, subject, creator, or date order.</p>
+          <p id="results-count">Use the search and filters above to refine the records displayed below.</p>
         </div>
         <label class="filter-field sort-field">
-          <span>Sort records</span>
+          <span>Sort by</span>
           <select id="sort-select">
+            <option value="secondary-asc" selected>Artist A-Z</option>
+            <option value="secondary-desc">Artist Z-A</option>
             <option value="title-asc">Title A-Z</option>
-            <option value="title-desc">Title Z-A</option>
-            <option value="secondary-asc" selected>Creator A-Z</option>
-            <option value="date-asc">Date Oldest-Newest</option>
-            <option value="date-desc">Date Newest-Oldest</option>
+            <option value="date-asc">Date: earliest first</option>
+            <option value="date-desc">Date: most recent first</option>
           </select>
         </label>
       </section>
@@ -103,11 +104,11 @@
         <div class="section-heading">
           <div>
             <p class="section-label">All Records</p>
-            <h2>Public object records</h2>
+            <h2>Collection Records</h2>
           </div>
           <p class="section-intro">
-            Each card presents an image, title, attribution, and the most useful public-facing
-            fields at a glance.
+            Browse individual works from the collection. Each record brings together available
+            object information, attribution, images, and related research documentation.
           </p>
         </div>
         <section class="gallery gallery-records" id="gallery" aria-label="Collection records"></section>
@@ -146,6 +147,6 @@
   </template>
 
   <script src="./image-protection.js?v=20260811c" defer></script>
-  <script src="./app.js?v=20260811x" type="module"></script>
+  <script src="./app.js?v=20260811y" type="module"></script>
 </body>
 </html>
