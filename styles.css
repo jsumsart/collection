@@ -508,6 +508,10 @@ h3 {
   margin-top: 8px;
 }
 
+.home-copy-single {
+  grid-template-columns: 1fr;
+}
+
 .home-copy-block {
   padding-top: 18px;
   border-top: 1px solid rgba(0, 18, 71, 0.16);
