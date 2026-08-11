@@ -14,8 +14,18 @@ document.addEventListener("contextmenu", (event) => {
   }
 });
 
+document.addEventListener("mousedown", (event) => {
+  if (event.button === 2 && isProtectedImage(event.target)) {
+    event.preventDefault();
+  }
+});
+
 document.addEventListener("dragstart", (event) => {
   if (isProtectedImage(event.target)) {
     event.preventDefault();
   }
 });
+
+for (const image of document.querySelectorAll(protectedImageSelector)) {
+  image.setAttribute("draggable", "false");
+}

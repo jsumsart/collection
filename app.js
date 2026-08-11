@@ -13,13 +13,14 @@ const featuredPrev = document.querySelector("#featured-prev");
 const featuredNext = document.querySelector("#featured-next");
 const FEATURED_RECORD_IDS = [
   "coll005",
-  "coll009",
+  "coll046",
   "coll016",
   "coll025",
   "coll038",
+  "coll048",
   "coll055",
   "coll076",
-  "coll083",
+  "coll083"
 ];
 
 let artworks = [];
