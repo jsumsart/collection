@@ -8,8 +8,17 @@ const creatorFilter = document.querySelector("#creator-filter");
 const sortSelect = document.querySelector("#sort-select");
 const cardTemplate = document.querySelector("#card-template");
 const emptyState = document.querySelector("#empty-state");
+const featuredImage = document.querySelector("#featured-image");
+const featuredTitle = document.querySelector("#featured-title");
+const featuredMaker = document.querySelector("#featured-maker");
+const featuredCaption = document.querySelector("#featured-caption");
+const featuredPrev = document.querySelector("#featured-prev");
+const featuredNext = document.querySelector("#featured-next");
 
 let artworks = [];
+let featuredWorks = [];
+let featuredIndex = 0;
+let featuredTimer = null;
 
 async function loadArtworks() {
   const response = await fetch(DATA_URL);
@@ -19,12 +28,89 @@ async function loadArtworks() {
 
   artworks = await response.json();
   renderStats(artworks);
+  setupFeaturedWorks(artworks);
 
   if (subjectFilter && creatorFilter && sortSelect && gallery && catalogBody) {
     populateFilter(subjectFilter, artworks.map((item) => item.subject));
     populateFilter(creatorFilter, artworks.map((item) => item.creator));
     renderCollection();
   }
+}
+
+function setupFeaturedWorks(items) {
+  if (!featuredImage || !featuredTitle || !featuredMaker || !featuredCaption) {
+    return;
+  }
+
+  featuredWorks = items
+    .filter((item) => item.imageUrl || item.image)
+    .slice(0, 8);
+
+  if (!featuredWorks.length) {
+    return;
+  }
+
+  renderFeaturedWork(featuredIndex);
+
+  if (featuredPrev && featuredNext) {
+    featuredPrev.addEventListener("click", () => {
+      stepFeaturedWork(-1);
+      restartFeaturedTimer();
+    });
+
+    featuredNext.addEventListener("click", () => {
+      stepFeaturedWork(1);
+      restartFeaturedTimer();
+    });
+  }
+
+  restartFeaturedTimer();
+}
+
+function restartFeaturedTimer() {
+  if (featuredTimer) {
+    window.clearInterval(featuredTimer);
+  }
+
+  if (featuredWorks.length < 2) {
+    return;
+  }
+
+  featuredTimer = window.setInterval(() => {
+    stepFeaturedWork(1);
+  }, 5500);
+}
+
+function stepFeaturedWork(direction) {
+  if (!featuredWorks.length) {
+    return;
+  }
+
+  featuredIndex = (featuredIndex + direction + featuredWorks.length) % featuredWorks.length;
+  renderFeaturedWork(featuredIndex);
+}
+
+function renderFeaturedWork(index) {
+  const item = featuredWorks[index];
+
+  if (!item) {
+    return;
+  }
+
+  featuredImage.src = item.imageUrl || item.image;
+  featuredImage.alt = item.title
+    ? `${item.title} by ${item.creator || "Unknown"}`
+    : "Featured work from the JSU collection";
+  featuredImage.onerror = () => {
+    featuredImage.src = "./assets/logo.png";
+    featuredImage.alt = "JSU Department of Art logo placeholder";
+  };
+
+  featuredTitle.textContent = item.title || "Untitled";
+  featuredMaker.textContent = [item.creator || "Creator unknown", item.date || "Date not recorded"]
+    .filter(Boolean)
+    .join(" | ");
+  featuredCaption.textContent = item.description || item.catalogCaption || "Collection record preview.";
 }
 
 function populateFilter(select, values) {

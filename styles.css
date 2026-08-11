@@ -197,7 +197,8 @@ a {
 }
 
 .hero-copy-wide {
-  max-width: 760px;
+  max-width: none;
+  width: 100%;
 }
 
 .hero-panel,
@@ -235,6 +236,19 @@ a {
   padding: 10px 0 6px;
 }
 
+.hero-intro-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(300px, 0.7fr);
+  gap: 44px;
+  align-items: start;
+}
+
+.hero-side {
+  display: grid;
+  gap: 22px;
+  padding-top: 12px;
+}
+
 .page-intro {
   display: flex;
   align-items: end;
@@ -264,8 +278,8 @@ h3 {
 }
 
 h1 {
-  max-width: 14ch;
-  font-size: clamp(2.35rem, 3.6vw, 3.75rem);
+  max-width: 10ch;
+  font-size: clamp(2.4rem, 4vw, 4.1rem);
   font-weight: 700;
 }
 
@@ -311,9 +325,83 @@ h3 {
 }
 
 .hero-text {
-  max-width: 64ch;
-  margin: 18px 0 0;
+  max-width: 46ch;
+  margin: 0;
   font-size: 0.98rem;
+}
+
+.featured-preview {
+  display: grid;
+  gap: 14px;
+}
+
+.featured-preview-frame,
+.featured-preview-meta {
+  background: #fff;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  border-radius: 16px;
+}
+
+.featured-preview-frame {
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  background: linear-gradient(135deg, #d8e8ff 0%, #f8fbff 100%);
+}
+
+.featured-preview-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.featured-preview-meta {
+  padding: 18px;
+}
+
+.featured-maker,
+.featured-caption {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.featured-maker {
+  margin-top: 10px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.featured-caption {
+  margin-top: 8px;
+  font-size: 0.95rem;
+}
+
+.featured-preview-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.slideshow-button {
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(0, 142, 214, 0.08);
+  color: var(--accent);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 160ms ease, border-color 160ms ease;
+}
+
+.slideshow-button:hover,
+.slideshow-button:focus-visible {
+  background: rgba(0, 142, 214, 0.16);
+  border-color: rgba(0, 142, 214, 0.28);
+  outline: none;
 }
 
 .section-intro,
@@ -326,7 +414,7 @@ h3 {
   display: flex;
   flex-wrap: wrap;
   gap: 14px;
-  margin-top: 28px;
+  margin-top: 24px;
 }
 
 .button {
@@ -628,6 +716,33 @@ h3 {
   align-items: start;
 }
 
+.about-copy {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 32px;
+  margin-top: 8px;
+}
+
+.about-copy-block {
+  padding-top: 18px;
+  border-top: 1px solid rgba(0, 18, 71, 0.16);
+}
+
+.about-copy-block p {
+  max-width: 58ch;
+  color: var(--muted);
+  line-height: 1.85;
+}
+
+.about-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-top: 12px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(0, 18, 71, 0.16);
+}
+
 .context {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -781,6 +896,7 @@ h3 {
 @media (max-width: 1100px) {
   .hero,
   .about,
+  .about-copy,
   .stewardship,
   .toolbar-wide,
   .page-intro,
@@ -788,6 +904,11 @@ h3 {
   .browse-lead,
   .home-copy {
     grid-template-columns: 1fr;
+  }
+
+  .hero-intro-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
   }
 
   .page-intro,
@@ -805,11 +926,15 @@ h3 {
   .record-hero {
     grid-template-columns: 1fr;
   }
+
+  h1 {
+    max-width: 12ch;
+  }
 }
 
 @media (max-width: 760px) {
   .page-shell {
-    width: min(100% - 20px, 1240px);
+    width: min(1240px, calc(100% - 20px));
     padding-top: 18px;
   }
 
@@ -837,15 +962,38 @@ h3 {
     font-size: 1.16rem;
   }
 
+  .hero-copy,
+  .record-intro,
+  .page-intro,
+  .gallery-section,
+  .catalog-section,
+  .controls,
+  .results-bar {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
   .card-meta {
     grid-template-columns: 1fr;
   }
 
   h1 {
-    font-size: clamp(2rem, 12vw, 3rem);
+    max-width: 100%;
+    font-size: clamp(2.2rem, 11vw, 3.4rem);
   }
 
   h2 {
     line-height: 1;
+  }
+
+  .hero-actions,
+  .about-links,
+  .featured-preview-controls {
+    flex-direction: column;
+  }
+
+  .button,
+  .slideshow-button {
+    width: 100%;
   }
 }
