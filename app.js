@@ -180,6 +180,21 @@ function filterArtworks() {
   const secondaryValue = creatorFilter.value;
   const primaryField = subjectFilter.dataset.field || "subject";
   const secondaryField = creatorFilter.dataset.field || "creator";
+  const queryFields =
+    COLLECTION_VARIANT === "department"
+      ? ["creator", "attribution"]
+      : [
+          "objectNumber",
+          "title",
+          "creator",
+          "culture",
+          "subject",
+          "objectType",
+          "materials",
+          "location",
+          "description",
+          "identifier",
+        ];
 
   return artworks.filter((item) => {
     if (primaryValue && getFieldValue(item, primaryField) !== primaryValue) {
@@ -194,18 +209,8 @@ function filterArtworks() {
       return true;
     }
 
-    const haystack = [
-      item.objectNumber,
-      item.title,
-      item.creator,
-      item.culture,
-      item.subject,
-      item.objectType,
-      item.materials,
-      item.location,
-      item.description,
-      item.identifier,
-    ]
+    const haystack = queryFields
+      .map((field) => item[field])
       .join(" ")
       .toLowerCase();
 
