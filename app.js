@@ -23,15 +23,15 @@ const FEATURED_RECORD_IDS = [
   "coll083"
 ];
 const FEATURED_IMAGE_OVERRIDES = {
-  coll005: "./assets/featured/coll005.png?v=20260811b",
-  coll016: "./assets/featured/coll016.png?v=20260811b",
-  coll025: "./assets/featured/coll025.png?v=20260811b",
-  coll038: "./assets/featured/coll038.png?v=20260811b",
-  coll046: "./assets/featured/coll046.png?v=20260811b",
-  coll048: "./assets/featured/coll048.png?v=20260811b",
-  coll055: "./assets/featured/coll055.png?v=20260811b",
-  coll076: "./assets/featured/coll076.png?v=20260811b",
-  coll083: "./assets/featured/coll083.png?v=20260811b",
+  coll005: "./assets/featured/coll005.png?v=20260811d",
+  coll016: "./assets/featured/coll016.png?v=20260811d",
+  coll025: "./assets/featured/coll025.png?v=20260811d",
+  coll038: "./assets/featured/coll038.png?v=20260811d",
+  coll046: "./assets/featured/coll046.png?v=20260811d",
+  coll048: "./assets/featured/coll048.png?v=20260811d",
+  coll055: "./assets/featured/coll055.png?v=20260811d",
+  coll076: "./assets/featured/coll076.png?v=20260811d",
+  coll083: "./assets/featured/coll083.png?v=20260811d",
 };
 
 let artworks = [];

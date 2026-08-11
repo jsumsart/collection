@@ -312,6 +312,31 @@ a {
   padding: 8px 0 0;
 }
 
+.browse-page-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.72fr);
+  align-items: end;
+  gap: 36px;
+}
+
+.browse-page-intro-copy {
+  display: grid;
+  gap: 10px;
+}
+
+.browse-page .page-intro-plain h1 {
+  max-width: 10ch;
+  margin: 0;
+  font-size: clamp(3rem, 6.2vw, 4.8rem);
+  line-height: 0.96;
+}
+
+.browse-page .page-intro-plain .hero-text {
+  max-width: 34ch;
+  font-size: 1.04rem;
+  margin: 0;
+}
+
 .about-page .page-intro-plain {
   display: grid;
   grid-template-columns: 1fr;
@@ -448,6 +473,7 @@ h3 {
   object-fit: cover;
   object-position: center center;
   padding: 0;
+  display: block;
 }
 
 .featured-preview-controls {
@@ -673,6 +699,27 @@ h3 {
   gap: 22px;
 }
 
+.browse-page .controls,
+.browse-page .results-bar,
+.browse-page .gallery-section {
+  padding: 18px;
+  border-radius: 14px;
+}
+
+.browse-page .controls h2,
+.browse-page .gallery-section h2 {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+}
+
+.browse-page .section-intro,
+.browse-page .results-note {
+  max-width: 58ch;
+}
+
+.browse-page .gallery-records {
+  gap: 18px;
+}
+
 .card {
   overflow: hidden;
   border-radius: 18px;
@@ -717,6 +764,29 @@ h3 {
 .card h3 {
   font-size: 1.28rem;
   line-height: 1.16;
+}
+
+.browse-page .card {
+  border-radius: 14px;
+  box-shadow: 0 14px 34px rgba(0, 18, 71, 0.08);
+}
+
+.browse-page .card:hover,
+.browse-page .card:focus-within {
+  box-shadow: 0 20px 46px rgba(0, 18, 71, 0.12);
+}
+
+.browse-page .card-body {
+  padding: 16px;
+}
+
+.browse-page .card h3 {
+  font-size: 1.12rem;
+  line-height: 1.14;
+}
+
+.browse-page .card-description {
+  font-size: 0.92rem;
 }
 
 .card-creator,
@@ -1006,6 +1076,11 @@ h3 {
     gap: 14px;
   }
 
+  .browse-page-intro {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
   .page-intro,
   .feature-band {
     display: grid;
@@ -1029,6 +1104,11 @@ h3 {
 
   .hero-home h1 {
     font-size: clamp(2.65rem, 6.2vw, 3.7rem);
+  }
+
+  .browse-page .page-intro-plain h1 {
+    max-width: 12ch;
+    font-size: clamp(2.6rem, 6vw, 3.8rem);
   }
 }
 
@@ -1091,6 +1171,11 @@ h3 {
   .about-page h1 {
     max-width: 100%;
     font-size: clamp(2.2rem, 9vw, 3rem);
+  }
+
+  .browse-page .page-intro-plain h1 {
+    max-width: 100%;
+    font-size: clamp(2.15rem, 10vw, 3.1rem);
   }
 
   .about-page .hero-text {

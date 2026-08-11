@@ -15,9 +15,9 @@
     rel="stylesheet"
   >
   <link rel="icon" href="./favicon.ico">
-  <link rel="stylesheet" href="./styles.css?v=20260811s">
+  <link rel="stylesheet" href="./styles.css?v=20260811t">
 </head>
-<body data-collection-data-url="./site-data/artworks.json" data-collection-variant="department">
+<body class="browse-page" data-collection-data-url="./site-data/artworks.json" data-collection-variant="department">
   <a class="skip-link" href="#collection">Skip to collection</a>
   <div class="page-shell">
     <header class="site-header">
@@ -37,9 +37,11 @@
     </header>
 
     <main>
-      <section class="page-intro">
-        <p class="eyebrow">Browse</p>
-        <h1>Collection records database</h1>
+      <section class="page-intro page-intro-plain browse-page-intro">
+        <div class="browse-page-intro-copy">
+          <p class="eyebrow">Browse</p>
+          <h1>Browse the collection</h1>
+        </div>
         <p class="hero-text">
           Search across titles, creators, subjects, locations, and descriptions. Each record opens
           to a stable object page suitable for citation and direct linking.
@@ -51,32 +53,13 @@
         <a class="collection-switcher-link" href="./african-art.html">African Art Collection</a>
       </section>
 
-      <section class="browse-lead">
-        <article class="browse-lead-card">
-          <p class="section-label">Browse Mode</p>
-          <h2>All records appear here unless filtered</h2>
-          <p>
-            This page presents the full public record wall for the collection. Use the filters below
-            to narrow the results, or move through the cards to scan the entire published set.
-          </p>
-        </article>
-        <article class="browse-lead-card browse-lead-card-dark">
-          <p class="section-label">Viewing Tip</p>
-          <h2>Each card combines image, attribution, and key record details</h2>
-          <p>
-            Open any record to move into the full object page, where you can read the longer
-            description, rights information, and associated metadata in one place.
-          </p>
-        </article>
-      </section>
-
       <section class="controls" id="collection">
         <div>
           <p class="section-label">Search Records</p>
-          <h2>Filter the collection</h2>
+          <h2>Refine the record wall</h2>
           <p class="section-intro">
-            The grid and table stay synchronized so visitors can move between visual browsing and
-            structured records without losing their place.
+            Use artist, subject, and creator filters to move through the published collection more
+            quickly.
           </p>
         </div>
         <div class="toolbar toolbar-wide">
@@ -120,10 +103,11 @@
         <div class="section-heading">
           <div>
             <p class="section-label">All Records</p>
-            <h2>Browse the collection</h2>
+            <h2>Public object records</h2>
           </div>
           <p class="section-intro">
-            Each card is a compact public-facing record with image, attribution, and core metadata.
+            Each card presents an image, title, attribution, and the most useful public-facing
+            fields at a glance.
           </p>
         </div>
         <section class="gallery gallery-records" id="gallery" aria-label="Collection records"></section>
@@ -162,6 +146,6 @@
   </template>
 
   <script src="./image-protection.js?v=20260811c" defer></script>
-  <script src="./app.js?v=20260811v" type="module"></script>
+  <script src="./app.js?v=20260811w" type="module"></script>
 </body>
 </html>

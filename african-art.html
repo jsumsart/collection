@@ -15,9 +15,9 @@
     rel="stylesheet"
   >
   <link rel="icon" href="./favicon.ico">
-  <link rel="stylesheet" href="./styles.css?v=20260811s">
+  <link rel="stylesheet" href="./styles.css?v=20260811t">
 </head>
-<body data-collection-data-url="./site-data/african-artworks.json" data-collection-variant="african">
+<body class="browse-page browse-page-african" data-collection-data-url="./site-data/african-artworks.json" data-collection-variant="african">
   <a class="skip-link" href="#collection">Skip to collection</a>
   <div class="page-shell">
     <header class="site-header">
@@ -37,9 +37,11 @@
     </header>
 
     <main>
-      <section class="page-intro">
-        <p class="eyebrow">African Art</p>
-        <h1>African Art collection records</h1>
+      <section class="page-intro page-intro-plain browse-page-intro">
+        <div class="browse-page-intro-copy">
+          <p class="eyebrow">African Art</p>
+          <h1>Browse African Art</h1>
+        </div>
         <p class="hero-text">
           Browse the Jackson State University African Art Collection as a distinct body of records,
           with object pages focused on culture or community, place, object type, materials, and
@@ -52,29 +54,10 @@
         <a class="collection-switcher-link is-active" href="./african-art.html">African Art Collection</a>
       </section>
 
-      <section class="browse-lead">
-        <article class="browse-lead-card">
-          <p class="section-label">Browse Mode</p>
-          <h2>This collection remains separate from the department collection records</h2>
-          <p>
-            Use this page to explore the African Art holdings on their own terms rather than mixing
-            them into the permanent collection browse path.
-          </p>
-        </article>
-        <article class="browse-lead-card browse-lead-card-dark">
-          <p class="section-label">Viewing Tip</p>
-          <h2>Filter by object type, culture or community, and keyword</h2>
-          <p>
-            Open any record to read the fuller object description, materials, technique, geographic
-            context, and attribution notes published for this collection.
-          </p>
-        </article>
-      </section>
-
       <section class="controls" id="collection">
         <div>
           <p class="section-label">Search Records</p>
-          <h2>Filter the African Art collection</h2>
+          <h2>Refine the record wall</h2>
           <p class="section-intro">
             Keyword search scans titles, cultures, materials, places, and descriptive text so the
             collection can be explored visually and contextually.
@@ -121,7 +104,7 @@
         <div class="section-heading">
           <div>
             <p class="section-label">African Art Records</p>
-            <h2>Browse the collection</h2>
+            <h2>Public object records</h2>
           </div>
           <p class="section-intro">
             Each card is a compact public-facing record with image, culture/community, place, and
@@ -164,6 +147,6 @@
   </template>
 
   <script src="./image-protection.js?v=20260811c" defer></script>
-  <script src="./app.js?v=20260811v" type="module"></script>
+  <script src="./app.js?v=20260811w" type="module"></script>
 </body>
 </html>
