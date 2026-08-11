@@ -19,6 +19,8 @@ CATALOG_CAPTIONS = {
     "coll024": "Cliff Johnson, Haunted House, 1966. Medium unknown, 17 x 22.5 in.",
     "coll025": "Edward Colker, Sign and Symbol, 1967. Lithograph in color, ed. 106/210.",
     "coll030": "Anderson Macklin, Abstract Landscape, n.d. Oil on canvas, 23.5 x 36 in.",
+    "coll034": "Dominic Azogini, Untitled (Sketch of a Man), c. 1980s. Medium unknown, 18 x 23 in.",
+    "coll035": "Attma, Passage, c. 1980. Engraving.",
     "coll033": "Floyd Willis Coleman, Study #17, c. 1970s.",
     "coll036": "William Majors, Burning Bush, 1967. Etching in sepia, ed. 72/110.",
     "coll042": "Robert R. Malone, Spring Night, 1966. Etching in color, ed. 123/210, 20 x 16 in.",
@@ -39,6 +41,7 @@ CATALOG_CAPTIONS = {
     "coll070": "Lynette K. Stephenson, Untitled (Dress), c. mid-1990s.",
     "coll071": "Attributed to Hugh E. Stevens, Young Man, n.d. Oil on Masonite, 51 x 51.5 in.",
     "coll076": "Kojin Toneyama, Sunset, 1966. Lithograph in color, ed. 191/210, 17 x 21.75 in.",
+    "coll084": "Chalmers W. Mayers Jr., Composition Number One, 1999. Acrylic and collage on board.",
 }
 
 FIELD_LABELS = [
