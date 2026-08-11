@@ -272,7 +272,10 @@ a {
 }
 
 .about-page .page-intro-plain {
-  display: block;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+  align-items: end;
+  gap: 40px;
   max-width: none;
 }
 
@@ -315,10 +318,10 @@ h1 {
 }
 
 .about-page h1 {
-  max-width: 11ch;
-  font-size: clamp(2.35rem, 3.8vw, 3.35rem);
+  max-width: 15ch;
+  font-size: clamp(2.45rem, 3.8vw, 3.5rem);
   line-height: 0.98;
-  margin-bottom: 16px;
+  margin-bottom: 0;
 }
 
 h2 {
@@ -373,7 +376,9 @@ h3 {
 }
 
 .about-page .hero-text {
-  max-width: 60ch;
+  max-width: 44ch;
+  justify-self: end;
+  margin-bottom: 4px;
 }
 
 .featured-preview {
@@ -934,6 +939,11 @@ h3 {
     gap: 18px;
   }
 
+  .about-page .page-intro-plain {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
   .page-intro,
   .feature-band {
     display: grid;
@@ -1019,6 +1029,12 @@ h3 {
   .about-page h1 {
     max-width: 100%;
     font-size: clamp(2.2rem, 9vw, 3rem);
+  }
+
+  .about-page .hero-text {
+    max-width: 100%;
+    justify-self: start;
+    margin-bottom: 0;
   }
 
   h2 {
