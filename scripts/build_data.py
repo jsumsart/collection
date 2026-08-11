@@ -10,11 +10,15 @@ OUTPUT = Path("site-data/artworks.json")
 RECORDS_DIR = Path("records")
 
 CATALOG_CAPTIONS = {
+    "coll001": "Artist unknown, Nineteenth-Century African American Portrait, n.d. Medium unknown, 19.6 x 15 in.",
+    "coll002": "Artist unknown, Nineteenth-Century African American Portrait, n.d. Medium unknown, 19.6 x 15 in.",
     "coll003": "Karl Griffin, Juanita, n.d. Oil on canvas, 31.5 x 23.5 in.",
     "coll004": "Thomas E. Eloby II, Self-Portrait, 1968. Ink on paper, 6.25 x 8.25 in.",
     "coll005": "Thomas E. Eloby II, Landscape, n.d. Oil on canvas, 36 x 24 in.",
     "coll008": "Brockford Gordon, Kneeling Football Player, n.d. Photograph on foam board.",
     "coll010": "Ronald O. Schnell, Landscape with a Bridge, n.d. Oil on canvas, 44 x 42 in.",
+    "coll018": "Hargreaves Ntukwana, Figure with Jug, n.d. Mixed media on paper, 14.25 x 10 in.",
+    "coll020": "Hargreaves Ntukwana, Figure with Small Bird, n.d. Mixed media on paper, 20 x 28.25 in.",
     "coll021": "Eli Kobeli, Musicians, n.d. Chalk on paper, 36 x 22.5 in.",
     "coll024": "Cliff Johnson, Haunted House, 1966. Medium unknown, 17 x 22.5 in.",
     "coll025": "Edward Colker, Sign and Symbol, 1967. Lithograph in color, ed. 106/210.",
@@ -23,6 +27,7 @@ CATALOG_CAPTIONS = {
     "coll035": "Attma, Passage, c. 1980. Engraving.",
     "coll033": "Floyd Willis Coleman, Study #17, c. 1970s.",
     "coll036": "William Majors, Burning Bush, 1967. Etching in sepia, ed. 72/110.",
+    "coll037": "Herbert Lewis Fink, The Foot Path, 1965. Etching, ed. 137/210, 17 1/8 x 21 3/8 in.",
     "coll042": "Robert R. Malone, Spring Night, 1966. Etching in color, ed. 123/210, 20 x 16 in.",
     "coll044": "Lewis Leon Lassiter, Las Cruces, 1991. Woodblock print, ed. 8/20, 9.5 x 10.5 in.",
     "coll053": "Floyd Willis Coleman, Mississippi Suite: Study, 1984. Pen and ink on paper, 16 x 23.5 in.",
@@ -48,7 +53,11 @@ FIELD_LABELS = [
     ("objectNumber", "Object Number"),
     ("title", "Title"),
     ("creator", "Creator"),
+    ("attribution", "Attribution"),
     ("date", "Date"),
+    ("medium", "Medium"),
+    ("dimensions", "Dimensions"),
+    ("edition", "Edition"),
     ("subject", "Subject"),
     ("location", "Associated Place"),
     ("identifier", "Identifier"),
@@ -73,6 +82,16 @@ def display_value(value, default="Not recorded"):
     return format_value(value) or default
 
 
+def display_creator(record):
+    creator = clean(record.get("creator"))
+    attribution = clean(record.get("attribution"))
+    if creator and attribution:
+        return f"{attribution} {creator}"
+    if creator:
+        return creator
+    return "Creator unknown"
+
+
 def normalize_id(raw_id, index):
     return clean(raw_id) or f"record-{index:03d}"
 
@@ -90,7 +109,11 @@ def build_record(row, index):
         "objectNumber": object_id.upper(),
         "title": clean(row.get("title")),
         "creator": clean(row.get("creator")),
+        "attribution": clean(row.get("attribution")),
         "date": clean(row.get("date")),
+        "medium": clean(row.get("medium")),
+        "dimensions": clean(row.get("dimensions")),
+        "edition": clean(row.get("edition")),
         "description": clean(row.get("description")),
         "subject": clean(row.get("subject")),
         "location": clean(row.get("location")),
@@ -138,9 +161,8 @@ def render_meta_rows(record):
 
 def render_record_page(record):
     title = escape(record["title"] or "Untitled")
-    creator = escape(record["creator"] or "Creator unknown")
-    subject = escape(record["subject"] or "Collection object")
-    image_alt = f"{record['title'] or 'Untitled'} by {record['creator'] or 'Unknown'}"
+    creator = escape(display_creator(record))
+    image_alt = f"{record['title'] or 'Untitled'} by {display_creator(record)}"
     description = escape(record["description"] or "Description not yet available.")
     map_link = ""
     if record.get("latitude") and record.get("longitude"):
@@ -168,7 +190,7 @@ def render_record_page(record):
     rel="stylesheet"
   >
   <link rel="icon" href="../favicon.ico">
-  <link rel="stylesheet" href="../styles.css?v=20260811j">
+  <link rel="stylesheet" href="../styles.css?v=20260811k">
 </head>
 <body class="record-page">
   <a class="skip-link" href="#record-main">Skip to record</a>
@@ -207,13 +229,17 @@ def render_record_page(record):
               <span class="record-summary-value">{escape(display_value(record["date"]))}</span>
             </article>
             <article>
-              <span class="record-summary-label">Subject</span>
-              <span class="record-summary-value">{subject}</span>
+              <span class="record-summary-label">Medium</span>
+              <span class="record-summary-value">{escape(display_value(record["medium"]))}</span>
+            </article>
+            <article>
+              <span class="record-summary-label">Dimensions</span>
+              <span class="record-summary-value">{escape(display_value(record["dimensions"]))}</span>
             </article>
           </div>
           <p class="record-description">{description}</p>
           <div class="hero-actions">
-            <a class="button button-primary" href="../browse.html#catalog-table">Return to catalog</a>
+            <a class="button button-primary" href="../browse.html">Return to catalog</a>
             <a class="button button-secondary" href="../_data/jsuart_metadata.csv">Download CSV</a>
             {map_link}
           </div>

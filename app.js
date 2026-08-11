@@ -26,6 +26,14 @@ let featuredWorks = [];
 let featuredIndex = 0;
 let featuredTimer = null;
 
+function displayCreator(item) {
+  if (item.attribution && item.creator) {
+    return `${item.attribution} ${item.creator}`;
+  }
+
+  return item.creator || "Creator unknown";
+}
+
 async function loadArtworks() {
   const response = await fetch(DATA_URL);
   if (!response.ok) {
@@ -110,7 +118,7 @@ function renderFeaturedWork(index) {
 
   featuredImage.src = item.imageUrl || item.image;
   featuredImage.alt = item.title
-    ? `${item.title} by ${item.creator || "Unknown"}`
+    ? `${item.title} by ${displayCreator(item)}`
     : "Featured work from the JSU collection";
   featuredImage.onerror = () => {
     featuredImage.src = "./assets/logo.png";
@@ -228,9 +236,10 @@ function renderGallery(items) {
       description: item.description || "Description coming soon.",
       meta: [
         ["Date", item.date || "Not recorded"],
-        ["Subject", item.subject || "Not recorded"],
+        ["Medium", item.medium || "Not recorded"],
+        ["Dimensions", item.dimensions || "Not recorded"],
         ["Location", item.location || "Not recorded"],
-        ["Rights", item.rights || "Not recorded"],
+        ["Object Type", item.type || "Not recorded"],
       ],
     });
     fragment.append(card);
@@ -244,7 +253,7 @@ function buildCard(item, config) {
   const cardLink = card.querySelector(".card-link");
   const image = card.querySelector("img");
   image.src = item.imageUrl || item.image;
-  image.alt = item.title ? `${item.title} by ${item.creator || "Unknown"}` : "Artwork from the JSU collection";
+  image.alt = item.title ? `${item.title} by ${displayCreator(item)}` : "Artwork from the JSU collection";
   image.addEventListener("error", () => {
     image.src = "./assets/logo.png";
     image.alt = "JSU Department of Art logo placeholder";
@@ -253,12 +262,12 @@ function buildCard(item, config) {
   cardLink.href = item.recordPath;
   cardLink.setAttribute(
     "aria-label",
-    `Open record for ${item.title || "Untitled"} by ${item.creator || "Unknown creator"}`
+    `Open record for ${item.title || "Untitled"} by ${displayCreator(item)}`
   );
 
   card.querySelector(".card-kicker").textContent = config.kicker;
   card.querySelector("h3").textContent = item.title || "Untitled";
-  card.querySelector(".card-creator").textContent = item.creator || "Creator unknown";
+  card.querySelector(".card-creator").textContent = displayCreator(item);
   card.querySelector(".card-description").textContent = config.description;
 
   const meta = card.querySelector(".card-meta");
