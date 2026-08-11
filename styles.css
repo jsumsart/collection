@@ -476,6 +476,26 @@ h3 {
   display: block;
 }
 
+.featured-preview-static {
+  gap: 0;
+}
+
+.featured-preview-frame-static {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  border-radius: 0;
+  overflow: visible;
+  aspect-ratio: auto;
+}
+
+.featured-preview-frame-static img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  object-position: center center;
+}
+
 .featured-preview-controls {
   display: flex;
   flex-wrap: wrap;
