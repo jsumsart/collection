@@ -1,4 +1,3 @@
-import AppKit
 import CoreGraphics
 import Foundation
 import ImageIO
@@ -23,7 +22,6 @@ let specs: [FeaturedSpec] = [
 
 let fileManager = FileManager.default
 let cwd = URL(fileURLWithPath: fileManager.currentDirectoryPath)
-let targetSize = CGSize(width: 1200, height: 900)
 let whiteThreshold = 242
 let alphaThreshold = 20
 
@@ -115,7 +113,7 @@ func fittedCropRect(for image: CGImage, contentRect: CGRect) -> CGRect {
     let marginY = contentRect.height * 0.06
     var expanded = contentRect.insetBy(dx: -marginX, dy: -marginY).intersection(imageRect)
 
-    let targetAspect = targetSize.width / targetSize.height
+    let targetAspect = 4.0 / 3.0
     var cropWidth = max(expanded.width, expanded.height * targetAspect)
     var cropHeight = cropWidth / targetAspect
 
@@ -147,29 +145,6 @@ func writePNG(image: CGImage, to url: URL) throws {
     }
 }
 
-func renderFeaturedVersion(from image: CGImage, cropRect: CGRect) -> CGImage? {
-    guard let cropped = image.cropping(to: cropRect) else {
-        return nil
-    }
-
-    let rep = NSBitmapImageRep(cgImage: cropped)
-    rep.size = targetSize
-
-    let rendered = NSImage(size: targetSize)
-    rendered.lockFocus()
-    NSGraphicsContext.current?.imageInterpolation = .high
-    rep.draw(in: NSRect(origin: .zero, size: targetSize))
-    rendered.unlockFocus()
-
-    guard let tiff = rendered.tiffRepresentation,
-          let outputRep = NSBitmapImageRep(data: tiff),
-          let cg = outputRep.cgImage else {
-        return nil
-    }
-
-    return cg
-}
-
 for spec in specs {
     let inputURL = cwd.appendingPathComponent(spec.input)
     let outputURL = cwd.appendingPathComponent(spec.output)
@@ -183,8 +158,8 @@ for spec in specs {
     let bounds = contentBounds(for: image)
     let cropRect = fittedCropRect(for: image, contentRect: bounds)
 
-    guard let result = renderFeaturedVersion(from: image, cropRect: cropRect) else {
-        fputs("Could not render featured crop for \(spec.input)\n", stderr)
+    guard let result = image.cropping(to: cropRect) else {
+        fputs("Could not crop featured image for \(spec.input)\n", stderr)
         continue
     }
 
