@@ -165,7 +165,7 @@ def render_record_page(record):
     rel="stylesheet"
   >
   <link rel="icon" href="../favicon.ico">
-  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../styles.css?v=20260811c">
 </head>
 <body class="record-page">
   <a class="skip-link" href="#record-main">Skip to record</a>

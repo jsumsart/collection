@@ -197,7 +197,7 @@ a {
 }
 
 .hero-copy-wide {
-  max-width: 920px;
+  max-width: 760px;
 }
 
 .hero-panel,
@@ -227,8 +227,12 @@ a {
 
 .hero-home .hero-copy {
   position: relative;
-  overflow: hidden;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(245, 249, 255, 0.96));
+  overflow: visible;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 10px 0 6px;
 }
 
 .page-intro {
@@ -384,17 +388,27 @@ h3 {
 
 .home-copy {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+  margin-top: 8px;
 }
 
 .home-copy-block {
-  padding-top: 4px;
-  border-top: 1px solid rgba(0, 18, 71, 0.12);
+  padding-top: 18px;
+  border-top: 1px solid rgba(0, 18, 71, 0.16);
 }
 
 .home-copy-block p {
   color: var(--muted);
   line-height: 1.8;
   max-width: 56ch;
+}
+
+#home-main .site-footer {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 10px 0 0;
 }
 
 .browse-lead {
