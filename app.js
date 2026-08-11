@@ -27,6 +27,14 @@ let featuredWorks = [];
 let featuredIndex = 0;
 let featuredTimer = null;
 
+function getBrowsableArtworks(items) {
+  if (COLLECTION_VARIANT !== "department") {
+    return items;
+  }
+
+  return items.filter((item) => item.type !== "Documentation Image");
+}
+
 function getFieldValue(item, fieldName) {
   return item?.[fieldName] || "";
 }
@@ -49,7 +57,7 @@ async function loadArtworks() {
     throw new Error(`Unable to load collection data: ${response.status}`);
   }
 
-  artworks = await response.json();
+  artworks = getBrowsableArtworks(await response.json());
   renderStats(artworks);
   setupFeaturedWorks(artworks);
 
