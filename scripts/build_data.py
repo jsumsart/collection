@@ -82,6 +82,10 @@ def display_value(value, default="Not recorded"):
     return format_value(value) or default
 
 
+def has_public_value(value):
+    return bool(format_value(value))
+
+
 def normalize_creator_name(value):
     creator = clean(value)
     if "," not in creator:
@@ -146,7 +150,9 @@ def build_record(row, index):
 def render_meta_rows(record):
     rows = []
     for key, label in FIELD_LABELS:
-        value = display_value(record.get(key))
+        if not has_public_value(record.get(key)):
+            continue
+        value = format_value(record.get(key))
         rows.append(
             f"""
             <div class="record-meta-row">
@@ -173,7 +179,8 @@ def render_record_page(record):
     title = escape(record["title"] or "Untitled")
     creator = escape(display_creator(record))
     image_alt = f"{record['title'] or 'Untitled'} by {display_creator(record)}"
-    description = escape(record["description"] or "Description not yet available.")
+    description = escape(record["description"]) if has_public_value(record.get("description")) else ""
+    catalog_caption = escape(format_value(record["catalogCaption"])) if has_public_value(record.get("catalogCaption")) else ""
     map_link = ""
     if record.get("latitude") and record.get("longitude"):
         map_link = (
@@ -182,6 +189,37 @@ def render_record_page(record):
             "View associated place"
             "</a>"
         )
+
+    summary_items = [
+        ("Accession Number", record["objectNumber"]),
+        ("Date", record.get("date")),
+        ("Medium", record.get("medium")),
+        ("Dimensions", record.get("dimensions")),
+    ]
+    summary_markup = "\n".join(
+        f"""
+            <article>
+              <span class="record-summary-label">{escape(label)}</span>
+              <span class="record-summary-value">{escape(format_value(value))}</span>
+            </article>
+        """.rstrip()
+        for label, value in summary_items
+        if has_public_value(value)
+    )
+
+    description_markup = f'<p class="record-description">{description}</p>' if description else ""
+    context_markup = f"<p>{catalog_caption}</p>" if catalog_caption else ""
+    description_panel = (
+        f"""
+        <article class="record-panel">
+          <p class="section-label">Collection Description</p>
+          <h2>Interpretive description</h2>
+          <p>{description}</p>
+        </article>
+        """.strip()
+        if description
+        else ""
+    )
 
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -232,27 +270,11 @@ def render_record_page(record):
           <h1>{title}</h1>
           <p class="record-creator">{creator}</p>
           <div class="record-summary-grid">
-            <article>
-              <span class="record-summary-label">Accession Number</span>
-              <span class="record-summary-value">{escape(record["objectNumber"])}</span>
-            </article>
-            <article>
-              <span class="record-summary-label">Date</span>
-              <span class="record-summary-value">{escape(display_value(record["date"]))}</span>
-            </article>
-            <article>
-              <span class="record-summary-label">Medium</span>
-              <span class="record-summary-value">{escape(display_value(record["medium"]))}</span>
-            </article>
-            <article>
-              <span class="record-summary-label">Dimensions</span>
-              <span class="record-summary-value">{escape(display_value(record["dimensions"]))}</span>
-            </article>
+            {summary_markup}
           </div>
-          <p class="record-description">{description}</p>
+          {description_markup}
           <div class="hero-actions">
             <a class="button button-primary" href="../browse.html">Return to catalog</a>
-            <a class="button button-secondary" href="../_data/jsuart_metadata.csv">Download CSV</a>
             {map_link}
           </div>
         </div>
@@ -266,14 +288,10 @@ def render_record_page(record):
             This public-facing record is drawn from the working catalog and supporting collection files
             maintained for the Jackson State University Department of Art Permanent Collection.
           </p>
-          <p>{escape(display_value(record["catalogCaption"], "No additional caption note is currently published for this object."))}</p>
+          {context_markup}
         </article>
 
-        <article class="record-panel">
-          <p class="section-label">Collection Description</p>
-          <h2>Interpretive description</h2>
-          <p>{description}</p>
-        </article>
+        {description_panel}
       </section>
 
       <section class="record-metadata">

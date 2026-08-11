@@ -38,6 +38,14 @@ def display_value(value, default="Not recorded"):
     return clean(value).replace(";", ", ") or default
 
 
+def format_value(value):
+    return clean(value).replace(";", ", ")
+
+
+def has_public_value(value):
+    return bool(format_value(value))
+
+
 def normalize_creator_name(value):
     creator = clean(value)
     if "," not in creator:
@@ -102,11 +110,13 @@ def build_record(row, index):
 def render_meta_rows(record):
     rows = []
     for key, label in FIELD_LABELS:
+        if not has_public_value(record.get(key)):
+            continue
         rows.append(
             f"""
             <div class="record-meta-row">
               <dt>{escape(label)}</dt>
-              <dd>{escape(display_value(record.get(key)))}</dd>
+              <dd>{escape(format_value(record.get(key)))}</dd>
             </div>
             """.strip()
         )
@@ -127,8 +137,13 @@ def render_meta_rows(record):
 def render_record_page(record):
     title = escape(record["title"] or "Untitled")
     agent = escape(display_agent(record))
-    description = escape(record["description"] or "Description not yet available.")
+    description = escape(record["description"]) if has_public_value(record.get("description")) else ""
     image_alt = f"{record['title'] or 'Untitled'} from the Jackson State University African Art Collection"
+    attribution_note = (
+        escape(format_value(record["attributionConfidence"]))
+        if has_public_value(record.get("attributionConfidence"))
+        else ""
+    )
     map_link = ""
     if record.get("latitude") and record.get("longitude"):
         map_link = (
@@ -137,6 +152,37 @@ def render_record_page(record):
             "View associated place"
             "</a>"
         )
+
+    summary_items = [
+        ("Object Number", record["objectNumber"]),
+        ("Date", record.get("date")),
+        ("Culture / Community", record.get("culture")),
+        ("Object Type", record.get("objectType")),
+    ]
+    summary_markup = "\n".join(
+        f"""
+            <article>
+              <span class="record-summary-label">{escape(label)}</span>
+              <span class="record-summary-value">{escape(format_value(value))}</span>
+            </article>
+        """.rstrip()
+        for label, value in summary_items
+        if has_public_value(value)
+    )
+
+    description_markup = f'<p class="record-description">{description}</p>' if description else ""
+    attribution_markup = f"<p>{attribution_note}</p>" if attribution_note else ""
+    description_panel = (
+        f"""
+        <article class="record-panel">
+          <p class="section-label">Object Description</p>
+          <h2>Interpretive description</h2>
+          <p>{description}</p>
+        </article>
+        """.strip()
+        if description
+        else ""
+    )
 
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -187,24 +233,9 @@ def render_record_page(record):
           <h1>{title}</h1>
           <p class="record-creator">{agent}</p>
           <div class="record-summary-grid">
-            <article>
-              <span class="record-summary-label">Object Number</span>
-              <span class="record-summary-value">{escape(display_value(record["objectNumber"]))}</span>
-            </article>
-            <article>
-              <span class="record-summary-label">Date</span>
-              <span class="record-summary-value">{escape(display_value(record["date"]))}</span>
-            </article>
-            <article>
-              <span class="record-summary-label">Culture / Community</span>
-              <span class="record-summary-value">{escape(display_value(record["culture"]))}</span>
-            </article>
-            <article>
-              <span class="record-summary-label">Object Type</span>
-              <span class="record-summary-value">{escape(display_value(record["objectType"]))}</span>
-            </article>
+            {summary_markup}
           </div>
-          <p class="record-description">{description}</p>
+          {description_markup}
           <div class="hero-actions">
             <a class="button button-primary" href="../african-art.html">Return to African Art browse</a>
             {map_link}
@@ -220,14 +251,10 @@ def render_record_page(record):
             This record is published as part of the Jackson State University African Art Collection
             and remains distinct from the Department of Art permanent collection browse path.
           </p>
-          <p>{escape(display_value(record["attributionConfidence"], "Attribution notes are not currently published for this object."))}</p>
+          {attribution_markup}
         </article>
 
-        <article class="record-panel">
-          <p class="section-label">Object Description</p>
-          <h2>Interpretive description</h2>
-          <p>{description}</p>
-        </article>
+        {description_panel}
       </section>
 
       <section class="record-metadata">
