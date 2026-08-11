@@ -11,6 +11,16 @@ const emptyState = document.querySelector("#empty-state");
 const featuredImage = document.querySelector("#featured-image");
 const featuredPrev = document.querySelector("#featured-prev");
 const featuredNext = document.querySelector("#featured-next");
+const FEATURED_OBJECT_NUMBERS = [
+  "COLL005",
+  "COLL009",
+  "COLL016",
+  "COLL025",
+  "COLL038",
+  "COLL055",
+  "COLL076",
+  "COLL083",
+];
 
 let artworks = [];
 let featuredWorks = [];
@@ -39,9 +49,14 @@ function setupFeaturedWorks(items) {
     return;
   }
 
-  featuredWorks = items
-    .filter((item) => item.imageUrl || item.image)
-    .slice(0, 8);
+  const itemsByObjectNumber = new Map(items.map((item) => [item.objectNumber, item]));
+  const curated = FEATURED_OBJECT_NUMBERS
+    .map((objectNumber) => itemsByObjectNumber.get(objectNumber))
+    .filter((item) => item && (item.imageUrl || item.image));
+
+  const fallback = items.filter((item) => item.imageUrl || item.image);
+
+  featuredWorks = curated.length ? curated : fallback.slice(0, 8);
 
   if (!featuredWorks.length) {
     return;
