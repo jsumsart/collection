@@ -1,4 +1,5 @@
-const DATA_URL = "./site-data/artworks.json";
+const DATA_URL = document.body.dataset.collectionDataUrl || "./site-data/artworks.json";
+const COLLECTION_VARIANT = document.body.dataset.collectionVariant || "department";
 const gallery = document.querySelector("#gallery");
 const resultsCount = document.querySelector("#results-count");
 const searchInput = document.querySelector("#search-input");
@@ -26,7 +27,15 @@ let featuredWorks = [];
 let featuredIndex = 0;
 let featuredTimer = null;
 
+function getFieldValue(item, fieldName) {
+  return item?.[fieldName] || "";
+}
+
 function displayCreator(item) {
+  if (COLLECTION_VARIANT === "african") {
+    return item.creator || item.culture || item.objectType || "Maker or culture not recorded";
+  }
+
   if (item.attribution && item.creator) {
     return `${item.attribution} ${item.creator}`;
   }
@@ -45,8 +54,8 @@ async function loadArtworks() {
   setupFeaturedWorks(artworks);
 
   if (subjectFilter && creatorFilter && sortSelect && gallery) {
-    populateFilter(subjectFilter, artworks.map((item) => item.subject));
-    populateFilter(creatorFilter, artworks.map((item) => item.creator));
+    populateFilter(subjectFilter, artworks.map((item) => getFieldValue(item, subjectFilter.dataset.field || "subject")));
+    populateFilter(creatorFilter, artworks.map((item) => getFieldValue(item, creatorFilter.dataset.field || "creator")));
     renderCollection();
   }
 }
@@ -167,15 +176,17 @@ function renderCollection() {
 
 function filterArtworks() {
   const query = searchInput.value.trim().toLowerCase();
-  const subject = subjectFilter.value;
-  const creator = creatorFilter.value;
+  const primaryValue = subjectFilter.value;
+  const secondaryValue = creatorFilter.value;
+  const primaryField = subjectFilter.dataset.field || "subject";
+  const secondaryField = creatorFilter.dataset.field || "creator";
 
   return artworks.filter((item) => {
-    if (subject && item.subject !== subject) {
+    if (primaryValue && getFieldValue(item, primaryField) !== primaryValue) {
       return false;
     }
 
-    if (creator && item.creator !== creator) {
+    if (secondaryValue && getFieldValue(item, secondaryField) !== secondaryValue) {
       return false;
     }
 
@@ -187,7 +198,10 @@ function filterArtworks() {
       item.objectNumber,
       item.title,
       item.creator,
+      item.culture,
       item.subject,
+      item.objectType,
+      item.materials,
       item.location,
       item.description,
       item.identifier,
@@ -202,14 +216,16 @@ function filterArtworks() {
 function sortArtworks(items) {
   const sorted = [...items];
   const mode = sortSelect.value;
+  const secondaryField = creatorFilter?.dataset.field || "creator";
 
   sorted.sort((left, right) => {
     if (mode === "title-desc") {
       return compareText(right.title, left.title);
     }
 
-    if (mode === "creator-asc") {
-      return compareText(left.creator, right.creator) || compareText(left.title, right.title);
+    if (mode === "secondary-asc") {
+      return compareText(getFieldValue(left, secondaryField), getFieldValue(right, secondaryField))
+        || compareText(left.title, right.title);
     }
 
     if (mode === "date-asc") {
@@ -231,17 +247,31 @@ function renderGallery(items) {
   const fragment = document.createDocumentFragment();
 
   for (const item of items) {
-    const card = buildCard(item, {
-      kicker: item.objectNumber || "Collection Record",
-      description: item.description || "Description coming soon.",
-      meta: [
-        ["Date", item.date || "Not recorded"],
-        ["Medium", item.medium || "Not recorded"],
-        ["Dimensions", item.dimensions || "Not recorded"],
-        ["Location", item.location || "Not recorded"],
-        ["Object Type", item.type || "Not recorded"],
-      ],
-    });
+    const card = buildCard(
+      item,
+      COLLECTION_VARIANT === "african"
+        ? {
+            kicker: item.objectNumber || "African Art Record",
+            description: item.description || "Description coming soon.",
+            meta: [
+              ["Date", item.date || "Not recorded"],
+              ["Culture", item.culture || "Not recorded"],
+              ["Place", item.location || "Not recorded"],
+              ["Object Type", item.objectType || "Not recorded"],
+            ],
+          }
+        : {
+            kicker: item.objectNumber || "Collection Record",
+            description: item.description || "Description coming soon.",
+            meta: [
+              ["Date", item.date || "Not recorded"],
+              ["Medium", item.medium || "Not recorded"],
+              ["Dimensions", item.dimensions || "Not recorded"],
+              ["Location", item.location || "Not recorded"],
+              ["Object Type", item.type || "Not recorded"],
+            ],
+          }
+    );
     fragment.append(card);
   }
 

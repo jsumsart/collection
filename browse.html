@@ -15,9 +15,9 @@
     rel="stylesheet"
   >
   <link rel="icon" href="./favicon.ico">
-  <link rel="stylesheet" href="./styles.css?v=20260811n">
+  <link rel="stylesheet" href="./styles.css?v=20260811o">
 </head>
-<body>
+<body data-collection-data-url="./site-data/artworks.json" data-collection-variant="department">
   <a class="skip-link" href="#collection">Skip to collection</a>
   <div class="page-shell">
     <header class="site-header">
@@ -31,6 +31,7 @@
       <nav class="site-nav" aria-label="Primary">
         <a href="./index.html">Home</a>
         <a href="./browse.html" aria-current="page">Browse</a>
+        <a href="./african-art.html">African Art</a>
         <a href="./about.html">About</a>
       </nav>
     </header>
@@ -43,6 +44,11 @@
           Search across titles, creators, subjects, locations, and descriptions. Each record opens
           to a stable object page suitable for citation and direct linking.
         </p>
+      </section>
+
+      <section class="collection-switcher" aria-label="Collection browse switcher">
+        <a class="collection-switcher-link is-active" href="./browse.html">Department Collection</a>
+        <a class="collection-switcher-link" href="./african-art.html">African Art Collection</a>
       </section>
 
       <section class="browse-lead">
@@ -80,13 +86,13 @@
           </label>
           <label class="filter-field">
             <span>Subject</span>
-            <select id="subject-filter">
+            <select id="subject-filter" data-field="subject">
               <option value="">All subjects</option>
             </select>
           </label>
           <label class="filter-field">
             <span>Creator</span>
-            <select id="creator-filter">
+            <select id="creator-filter" data-field="creator">
               <option value="">All creators</option>
             </select>
           </label>
@@ -103,7 +109,7 @@
           <select id="sort-select">
             <option value="title-asc">Title A-Z</option>
             <option value="title-desc">Title Z-A</option>
-            <option value="creator-asc">Creator A-Z</option>
+            <option value="secondary-asc">Creator A-Z</option>
             <option value="date-asc">Date Oldest-Newest</option>
             <option value="date-desc">Date Newest-Oldest</option>
           </select>
@@ -155,6 +161,6 @@
     </article>
   </template>
 
-  <script src="./app.js?v=20260811n" type="module"></script>
+  <script src="./app.js?v=20260811o" type="module"></script>
 </body>
 </html>

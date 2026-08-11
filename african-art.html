@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>African Art Collection | JSU Department of Art</title>
+  <meta
+    name="description"
+    content="Browse object records from the Jackson State University African Art Collection."
+  >
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+  <link rel="icon" href="./favicon.ico">
+  <link rel="stylesheet" href="./styles.css?v=20260811o">
+</head>
+<body data-collection-data-url="./site-data/african-artworks.json" data-collection-variant="african">
+  <a class="skip-link" href="#collection">Skip to collection</a>
+  <div class="page-shell">
+    <header class="site-header">
+      <a class="brand" href="./index.html" aria-label="JSU Art home">
+        <img class="brand-mark" src="./assets/logo.png" alt="JSU Department of Art logo">
+        <span class="brand-lockup">
+          <span class="brand-kicker">Jackson State University</span>
+          <span class="brand-title">Department of Art Permanent Collection</span>
+        </span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="./index.html">Home</a>
+        <a href="./browse.html">Browse</a>
+        <a href="./african-art.html" aria-current="page">African Art</a>
+        <a href="./about.html">About</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="page-intro">
+        <p class="eyebrow">African Art</p>
+        <h1>African Art collection records</h1>
+        <p class="hero-text">
+          Browse the Jackson State University African Art Collection as a distinct body of records,
+          with object pages focused on culture or community, place, object type, materials, and
+          interpretive description.
+        </p>
+      </section>
+
+      <section class="collection-switcher" aria-label="Collection browse switcher">
+        <a class="collection-switcher-link" href="./browse.html">Department Collection</a>
+        <a class="collection-switcher-link is-active" href="./african-art.html">African Art Collection</a>
+      </section>
+
+      <section class="browse-lead">
+        <article class="browse-lead-card">
+          <p class="section-label">Browse Mode</p>
+          <h2>This collection remains separate from the department collection records</h2>
+          <p>
+            Use this page to explore the African Art holdings on their own terms rather than mixing
+            them into the permanent collection browse path.
+          </p>
+        </article>
+        <article class="browse-lead-card browse-lead-card-dark">
+          <p class="section-label">Viewing Tip</p>
+          <h2>Filter by object type, culture or community, and keyword</h2>
+          <p>
+            Open any record to read the fuller object description, materials, technique, geographic
+            context, and attribution notes published for this collection.
+          </p>
+        </article>
+      </section>
+
+      <section class="controls" id="collection">
+        <div>
+          <p class="section-label">Search Records</p>
+          <h2>Filter the African Art collection</h2>
+          <p class="section-intro">
+            Keyword search scans titles, cultures, materials, places, and descriptive text so the
+            collection can be explored visually and contextually.
+          </p>
+        </div>
+        <div class="toolbar toolbar-wide">
+          <label class="search-field">
+            <span>Keyword search</span>
+            <input id="search-input" type="search" placeholder="Search by title, culture, object type, material, or place">
+          </label>
+          <label class="filter-field">
+            <span>Object type</span>
+            <select id="subject-filter" data-field="objectType">
+              <option value="">All object types</option>
+            </select>
+          </label>
+          <label class="filter-field">
+            <span>Culture or community</span>
+            <select id="creator-filter" data-field="culture">
+              <option value="">All cultures or communities</option>
+            </select>
+          </label>
+        </div>
+      </section>
+
+      <section class="results-bar" aria-live="polite">
+        <div>
+          <p id="results-count">Loading collection...</p>
+          <p class="results-note">Filter the cards by keyword, object type, culture/community, or date order.</p>
+        </div>
+        <label class="filter-field sort-field">
+          <span>Sort records</span>
+          <select id="sort-select">
+            <option value="title-asc">Title A-Z</option>
+            <option value="title-desc">Title Z-A</option>
+            <option value="secondary-asc">Culture A-Z</option>
+            <option value="date-asc">Date Oldest-Newest</option>
+            <option value="date-desc">Date Newest-Oldest</option>
+          </select>
+        </label>
+      </section>
+
+      <section class="gallery-section">
+        <div class="section-heading">
+          <div>
+            <p class="section-label">African Art Records</p>
+            <h2>Browse the collection</h2>
+          </div>
+          <p class="section-intro">
+            Each card is a compact public-facing record with image, culture/community, place, and
+            object type.
+          </p>
+        </div>
+        <section class="gallery gallery-records" id="gallery" aria-label="African Art collection records"></section>
+      </section>
+
+      <section class="empty-state" id="empty-state" hidden aria-live="polite">
+        <p class="section-label">No Results</p>
+        <h2>No records match this search</h2>
+        <p>Try a broader search term, remove a filter, or choose a different sort order.</p>
+      </section>
+
+      <footer class="site-footer">
+        <p>
+          Need the department collection instead? Visit the <a class="inline-link" href="./browse.html">Department Collection browse page</a>
+          or read more context on the <a class="inline-link" href="./about.html">About page</a>.
+        </p>
+      </footer>
+    </main>
+  </div>
+
+  <template id="card-template">
+    <article class="card">
+      <a class="card-link" href="#">
+        <div class="card-media">
+          <img alt="" loading="lazy">
+        </div>
+        <div class="card-body">
+          <p class="card-kicker"></p>
+          <h3></h3>
+          <p class="card-creator"></p>
+          <p class="card-description"></p>
+          <dl class="card-meta"></dl>
+        </div>
+      </a>
+    </article>
+  </template>
+
+  <script src="./app.js?v=20260811o" type="module"></script>
+</body>
+</html>

@@ -190,7 +190,7 @@ def render_record_page(record):
     rel="stylesheet"
   >
   <link rel="icon" href="../favicon.ico">
-  <link rel="stylesheet" href="../styles.css?v=20260811n">
+  <link rel="stylesheet" href="../styles.css?v=20260811o">
 </head>
 <body class="record-page">
   <a class="skip-link" href="#record-main">Skip to record</a>
@@ -206,6 +206,7 @@ def render_record_page(record):
       <nav class="site-nav" aria-label="Primary">
         <a href="../index.html">Home</a>
         <a href="../browse.html">Browse</a>
+        <a href="../african-art.html">African Art</a>
         <a href="../about.html">About</a>
       </nav>
     </header>
