@@ -190,7 +190,7 @@ def render_record_page(record):
     rel="stylesheet"
   >
   <link rel="icon" href="../favicon.ico">
-  <link rel="stylesheet" href="../styles.css?v=20260811k">
+  <link rel="stylesheet" href="../styles.css?v=20260811l">
 </head>
 <body class="record-page">
   <a class="skip-link" href="#record-main">Skip to record</a>

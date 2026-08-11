@@ -755,6 +755,17 @@ h3 {
   padding: 12px 0 0;
 }
 
+.about-page .page-intro,
+.about-page .page-intro-plain {
+  display: block;
+  max-width: 64rem;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 8px 0 0;
+}
+
 .context {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
