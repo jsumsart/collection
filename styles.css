@@ -789,6 +789,22 @@ h3 {
   font-size: 0.92rem;
 }
 
+.browse-page .card-kicker {
+  margin-bottom: 8px;
+}
+
+.browse-page .card-creator {
+  margin-top: 8px;
+  font-size: 0.94rem;
+}
+
+.browse-page .card-summary {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
 .card-creator,
 .card-description {
   margin: 8px 0 0;

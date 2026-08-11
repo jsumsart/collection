@@ -309,23 +309,18 @@ function renderGallery(items) {
       COLLECTION_VARIANT === "african"
         ? {
             kicker: item.objectNumber || "African Art Record",
-            description: item.description || "",
             meta: [
-              ["Date", item.date || ""],
-              ["Culture", item.culture || ""],
-              ["Place", item.location || ""],
-              ["Object Type", item.objectType || ""],
+              item.culture || "",
+              item.objectType || "",
+              item.date || "",
             ],
           }
         : {
             kicker: item.objectNumber || "Collection Record",
-            description: item.description || "",
             meta: [
-              ["Date", item.date || ""],
-              ["Medium", item.medium || ""],
-              ["Dimensions", item.dimensions || ""],
-              ["Location", item.location || ""],
-              ["Object Type", item.type || ""],
+              item.date || "",
+              item.medium || "",
+              item.location || "",
             ],
           }
     );
@@ -356,31 +351,21 @@ function buildCard(item, config) {
   card.querySelector("h3").textContent = item.title || "Untitled";
   card.querySelector(".card-creator").textContent = displayCreator(item);
   const description = card.querySelector(".card-description");
-  if (hasDisplayValue(config.description)) {
-    description.textContent = config.description;
-  } else {
-    description.remove();
-  }
+  description.remove();
 
   const meta = card.querySelector(".card-meta");
-  for (const [label, value] of config.meta) {
-    if (!hasDisplayValue(value)) {
-      continue;
-    }
-    meta.append(metaRow(label, value));
+  const compactMeta = config.meta.filter(hasDisplayValue);
+
+  if (compactMeta.length) {
+    const summary = document.createElement("p");
+    summary.className = "card-summary";
+    summary.textContent = compactMeta.join(" | ");
+    meta.replaceWith(summary);
+  } else {
+    meta.remove();
   }
 
   return card;
-}
-
-function metaRow(label, value) {
-  const wrapper = document.createElement("div");
-  const dt = document.createElement("dt");
-  const dd = document.createElement("dd");
-  dt.textContent = label;
-  dd.textContent = value;
-  wrapper.append(dt, dd);
-  return wrapper;
 }
 
 function compareText(left = "", right = "") {
