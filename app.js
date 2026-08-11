@@ -17,7 +17,6 @@ const FEATURED_RECORD_IDS = [
   "coll016",
   "coll025",
   "coll038",
-  "coll048",
   "coll055",
   "coll076",
   "coll083"
@@ -28,7 +27,6 @@ const FEATURED_IMAGE_OVERRIDES = {
   coll025: "./assets/featured/coll025.png?v=20260811d",
   coll038: "./assets/featured/coll038.png?v=20260811d",
   coll046: "./assets/featured/coll046.png?v=20260811d",
-  coll048: "./assets/featured/coll048.png?v=20260811d",
   coll055: "./assets/featured/coll055.png?v=20260811d",
   coll076: "./assets/featured/coll076.png?v=20260811d",
   coll083: "./assets/featured/coll083.png?v=20260811d",
