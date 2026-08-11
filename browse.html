@@ -15,7 +15,7 @@
     rel="stylesheet"
   >
   <link rel="icon" href="./favicon.ico">
-  <link rel="stylesheet" href="./styles.css?v=20260811g">
+  <link rel="stylesheet" href="./styles.css?v=20260811i">
 </head>
 <body>
   <a class="skip-link" href="#collection">Skip to collection</a>
@@ -48,18 +48,18 @@
       <section class="browse-lead">
         <article class="browse-lead-card">
           <p class="section-label">Browse Mode</p>
-          <h2>All objects are listed here unless filtered</h2>
+          <h2>All records appear here unless filtered</h2>
           <p>
-            This page is the full working browse interface. Use the search tools below to narrow the
-            collection, or scroll the grid and table to inspect the entire published set.
+            This page presents the full public record wall for the collection. Use the filters below
+            to narrow the results, or move through the cards to scan the entire published set.
           </p>
         </article>
         <article class="browse-lead-card browse-lead-card-dark">
-          <p class="section-label">Tip</p>
-          <h2>Use cards for visual scanning and the table for record work</h2>
+          <p class="section-label">Viewing Tip</p>
+          <h2>Each card combines image, attribution, and key record details</h2>
           <p>
-            Both views stay synchronized, so you can move between image-led browsing and structured
-            metadata without losing your filters.
+            Open any record to move into the full object page, where you can read the longer
+            description, rights information, and associated metadata in one place.
           </p>
         </article>
       </section>
@@ -96,7 +96,7 @@
       <section class="results-bar" aria-live="polite">
         <div>
           <p id="results-count">Loading collection...</p>
-          <p class="results-note">Visual browse and records table are linked views of the same data.</p>
+          <p class="results-note">Filter the cards by keyword, subject, creator, or date order.</p>
         </div>
         <label class="filter-field sort-field">
           <span>Sort records</span>
@@ -113,42 +113,14 @@
       <section class="gallery-section">
         <div class="section-heading">
           <div>
-            <p class="section-label">Visual Browse</p>
-            <h2>Scan the collection</h2>
+            <p class="section-label">All Records</p>
+            <h2>Browse the collection</h2>
           </div>
           <p class="section-intro">
-            Open any object card to move into the full record page with published metadata.
+            Each card is a compact public-facing record with image, attribution, and core metadata.
           </p>
         </div>
-        <section class="gallery" id="gallery" aria-label="Collection highlights"></section>
-      </section>
-
-      <section class="catalog-section" id="catalog-table">
-        <div class="section-heading">
-          <div>
-            <p class="section-label">Records Table</p>
-            <h2>Structured object records</h2>
-          </div>
-          <p class="section-intro">
-            Use the table for more database-like browsing across object numbers, attribution, subject,
-            and associated place.
-          </p>
-        </div>
-        <div class="catalog-table-shell">
-          <table class="catalog-table">
-            <thead>
-              <tr>
-                <th scope="col">Object Number</th>
-                <th scope="col">Title</th>
-                <th scope="col">Creator</th>
-                <th scope="col">Date</th>
-                <th scope="col">Subject</th>
-                <th scope="col">Location</th>
-              </tr>
-            </thead>
-            <tbody id="catalog-body"></tbody>
-          </table>
-        </div>
+        <section class="gallery gallery-records" id="gallery" aria-label="Collection records"></section>
       </section>
 
       <section class="empty-state" id="empty-state" hidden aria-live="polite">
@@ -183,6 +155,6 @@
     </article>
   </template>
 
-  <script src="./app.js?v=20260811g" type="module"></script>
+  <script src="./app.js?v=20260811i" type="module"></script>
 </body>
 </html>

@@ -1,6 +1,5 @@
 const DATA_URL = "./site-data/artworks.json";
 const gallery = document.querySelector("#gallery");
-const catalogBody = document.querySelector("#catalog-body");
 const resultsCount = document.querySelector("#results-count");
 const searchInput = document.querySelector("#search-input");
 const subjectFilter = document.querySelector("#subject-filter");
@@ -37,7 +36,7 @@ async function loadArtworks() {
   renderStats(artworks);
   setupFeaturedWorks(artworks);
 
-  if (subjectFilter && creatorFilter && sortSelect && gallery && catalogBody) {
+  if (subjectFilter && creatorFilter && sortSelect && gallery) {
     populateFilter(subjectFilter, artworks.map((item) => item.subject));
     populateFilter(creatorFilter, artworks.map((item) => item.creator));
     renderCollection();
@@ -151,7 +150,6 @@ function renderStats(items) {
 function renderCollection() {
   const filtered = sortArtworks(filterArtworks());
   renderGallery(filtered);
-  renderTable(filtered);
   emptyState.hidden = filtered.length !== 0;
   resultsCount.textContent =
     filtered.length === 0
@@ -269,26 +267,6 @@ function buildCard(item, config) {
   }
 
   return card;
-}
-
-function renderTable(items) {
-  catalogBody.innerHTML = "";
-  const fragment = document.createDocumentFragment();
-
-  for (const item of items) {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${escapeHtml(item.objectNumber || "Not recorded")}</td>
-      <td><a class="record-table-link" href="${escapeHtml(item.recordPath)}">${escapeHtml(item.title || "Untitled")}</a></td>
-      <td>${escapeHtml(item.creator || "Creator unknown")}</td>
-      <td>${escapeHtml(item.date || "Not recorded")}</td>
-      <td>${escapeHtml(item.subject || "Not recorded")}</td>
-      <td>${escapeHtml(item.location || "Not recorded")}</td>
-    `;
-    fragment.append(row);
-  }
-
-  catalogBody.append(fragment);
 }
 
 function metaRow(label, value) {

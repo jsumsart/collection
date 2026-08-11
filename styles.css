@@ -614,9 +614,14 @@ h3 {
   gap: 14px;
 }
 
+.gallery-records {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+
 .card {
   overflow: hidden;
-  border-radius: 12px;
+  border-radius: 18px;
   background: var(--surface-strong);
   border: 1px solid var(--line);
   transition: transform 180ms ease, box-shadow 180ms ease;
@@ -640,7 +645,7 @@ h3 {
 }
 
 .card-media {
-  aspect-ratio: 3 / 2;
+  aspect-ratio: 4 / 3;
   background: linear-gradient(135deg, #d6e6ff, #f5faff);
 }
 
@@ -651,13 +656,13 @@ h3 {
 }
 
 .card-body {
-  padding: 14px;
+  padding: 18px 18px 20px;
   background: #fff;
 }
 
 .card h3 {
-  font-size: 1.18rem;
-  line-height: 1.2;
+  font-size: 1.28rem;
+  line-height: 1.16;
 }
 
 .card-creator,
@@ -665,9 +670,17 @@ h3 {
   margin: 8px 0 0;
 }
 
+.card-kicker {
+  margin-bottom: 10px;
+}
+
+.card-creator {
+  font-weight: 600;
+}
+
 .card-description {
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
   font-size: 0.96rem;
@@ -677,8 +690,8 @@ h3 {
 .card-meta {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px 12px;
-  margin-top: 14px;
+  gap: 10px 14px;
+  margin-top: 16px;
   font-size: 0.84rem;
 }
 
@@ -697,39 +710,6 @@ h3 {
 
 .card-meta dd {
   margin: 6px 0 0;
-}
-
-.catalog-table-shell {
-  overflow-x: auto;
-  border-radius: 12px;
-  border: 1px solid var(--line);
-  background: var(--surface-strong);
-}
-
-.catalog-table {
-  width: 100%;
-  min-width: 840px;
-  border-collapse: collapse;
-}
-
-.catalog-table th,
-.catalog-table td {
-  padding: 14px 16px;
-  text-align: left;
-  border-bottom: 1px solid var(--line);
-  vertical-align: top;
-}
-
-.catalog-table thead th {
-  font-size: 0.78rem;
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-  color: var(--accent-bright);
-  background: rgba(0, 18, 71, 0.04);
-}
-
-.catalog-table tbody tr:hover {
-  background: rgba(0, 142, 214, 0.06);
 }
 
 .about {
@@ -949,6 +929,7 @@ h3 {
   }
 
   .gallery,
+  .gallery-records,
   .context,
   .record-detail-grid,
   .record-meta-list {
@@ -983,6 +964,7 @@ h3 {
 
   .toolbar-wide,
   .gallery,
+  .gallery-records,
   .context,
   .record-detail-grid,
   .record-meta-list,
