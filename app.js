@@ -9,9 +9,6 @@ const sortSelect = document.querySelector("#sort-select");
 const cardTemplate = document.querySelector("#card-template");
 const emptyState = document.querySelector("#empty-state");
 const featuredImage = document.querySelector("#featured-image");
-const featuredTitle = document.querySelector("#featured-title");
-const featuredMaker = document.querySelector("#featured-maker");
-const featuredCaption = document.querySelector("#featured-caption");
 const featuredPrev = document.querySelector("#featured-prev");
 const featuredNext = document.querySelector("#featured-next");
 
@@ -38,7 +35,7 @@ async function loadArtworks() {
 }
 
 function setupFeaturedWorks(items) {
-  if (!featuredImage || !featuredTitle || !featuredMaker || !featuredCaption) {
+  if (!featuredImage) {
     return;
   }
 
@@ -105,12 +102,6 @@ function renderFeaturedWork(index) {
     featuredImage.src = "./assets/logo.png";
     featuredImage.alt = "JSU Department of Art logo placeholder";
   };
-
-  featuredTitle.textContent = item.title || "Untitled";
-  featuredMaker.textContent = [item.creator || "Creator unknown", item.date || "Date not recorded"]
-    .filter(Boolean)
-    .join(" | ");
-  featuredCaption.textContent = item.description || item.catalogCaption || "Collection record preview.";
 }
 
 function populateFilter(select, values) {

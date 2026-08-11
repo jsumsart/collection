@@ -350,8 +350,7 @@ h3 {
   gap: 14px;
 }
 
-.featured-preview-frame,
-.featured-preview-meta {
+.featured-preview-frame {
   background: #fff;
   border: 1px solid var(--line);
   box-shadow: var(--shadow);
@@ -370,33 +369,11 @@ h3 {
   object-fit: cover;
 }
 
-.featured-preview-meta {
-  padding: 18px;
-}
-
-.featured-maker,
-.featured-caption {
-  margin: 0;
-  color: var(--muted);
-  line-height: 1.7;
-}
-
-.featured-maker {
-  margin-top: 10px;
-  font-weight: 600;
-  color: var(--ink);
-}
-
-.featured-caption {
-  margin-top: 8px;
-  font-size: 0.95rem;
-}
-
 .featured-preview-controls {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin-top: 16px;
+  justify-content: flex-start;
 }
 
 .slideshow-button {
