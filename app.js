@@ -22,6 +22,17 @@ const FEATURED_RECORD_IDS = [
   "coll076",
   "coll083"
 ];
+const FEATURED_IMAGE_OVERRIDES = {
+  coll005: "./assets/featured/coll005.png",
+  coll016: "./assets/featured/coll016.png",
+  coll025: "./assets/featured/coll025.png",
+  coll038: "./assets/featured/coll038.png",
+  coll046: "./assets/featured/coll046.png",
+  coll048: "./assets/featured/coll048.png",
+  coll055: "./assets/featured/coll055.png",
+  coll076: "./assets/featured/coll076.png",
+  coll083: "./assets/featured/coll083.png",
+};
 
 let artworks = [];
 let featuredWorks = [];
@@ -160,7 +171,7 @@ function renderFeaturedWork(index) {
     return;
   }
 
-  featuredImage.src = item.imageUrl || item.image;
+  featuredImage.src = FEATURED_IMAGE_OVERRIDES[item.id] || item.imageUrl || item.image;
   featuredImage.alt = item.title
     ? `${item.title} by ${displayCreator(item)}`
     : "Featured work from the JSU collection";
