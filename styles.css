@@ -317,6 +317,11 @@ a {
   grid-template-columns: minmax(0, 1fr) minmax(320px, 0.72fr);
   align-items: end;
   gap: 36px;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 8px 0 0;
 }
 
 .browse-page-intro-copy {
@@ -335,6 +340,7 @@ a {
   max-width: 34ch;
   font-size: 1.04rem;
   margin: 0;
+  background: transparent;
 }
 
 .about-page .page-intro-plain {
