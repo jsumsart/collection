@@ -8,9 +8,18 @@ const creatorFilter = document.querySelector("#creator-filter");
 const sortSelect = document.querySelector("#sort-select");
 const cardTemplate = document.querySelector("#card-template");
 const emptyState = document.querySelector("#empty-state");
+const paginationTop = document.querySelector("#pagination-top");
+const paginationBottom = document.querySelector("#pagination-bottom");
+const paginationStatusTop = document.querySelector("#pagination-status-top");
+const paginationStatusBottom = document.querySelector("#pagination-status-bottom");
+const paginationPrevTop = document.querySelector("#pagination-prev-top");
+const paginationPrevBottom = document.querySelector("#pagination-prev-bottom");
+const paginationNextTop = document.querySelector("#pagination-next-top");
+const paginationNextBottom = document.querySelector("#pagination-next-bottom");
 const featuredImage = document.querySelector("#featured-image");
 const featuredPrev = document.querySelector("#featured-prev");
 const featuredNext = document.querySelector("#featured-next");
+const PAGE_SIZE = COLLECTION_VARIANT === "african" ? 24 : 9999;
 const FEATURED_RECORD_IDS = [
   "coll046",
   "coll016",
@@ -31,11 +40,26 @@ const FEATURED_IMAGE_OVERRIDES = {
   coll083: "./assets/featured/coll083.png?v=20260811d",
 };
 const UNKNOWN_CREATOR_LABEL = "Creator not presently known";
+const AFRICAN_CULTURE_CAVEATS = [
+  "attribution uncertain",
+  "attribution probable",
+  "probable attribution",
+  "attribution tentative",
+  "attribution high",
+  "attribution probable but not documented",
+  "attribution probable but cautious",
+  "likely",
+  "possibly",
+  "tentative",
+  "probable",
+  "uncertain",
+];
 
 let artworks = [];
 let featuredWorks = [];
 let featuredIndex = 0;
 let featuredTimer = null;
+let currentPage = 1;
 
 function normalizeCreatorName(value = "") {
   const creator = value.trim();
@@ -72,6 +96,183 @@ function getFieldValue(item, fieldName) {
   return item?.[fieldName] || "";
 }
 
+function normalizeAfricanCultureLabel(value = "") {
+  if (COLLECTION_VARIANT !== "african") {
+    return value;
+  }
+
+  let normalized = String(value || "").trim();
+
+  if (!normalized) {
+    return "";
+  }
+
+  normalized = normalized
+    .replace(/\bDemocratic Republic of the Congo\b/gi, "")
+    .replace(/\bnorthern Cameroon\b/gi, "")
+    .replace(/\bcoastal Guinea region\b/gi, "")
+    .replace(/\beastern Congo peoples\b/gi, "Lega peoples")
+    .replace(/\beastern Central African peoples\b/gi, "Central African peoples")
+    .replace(/\bWest Central African peoples\b/gi, "Central or West-Central African peoples")
+    .replace(/\bWest-Central African peoples\b/gi, "Central or West-Central African peoples")
+    .replace(/\bWest or Central African peoples\b/gi, "West or Central African peoples");
+
+  normalized = normalized
+    .split(",")
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .filter((part) => {
+      const lower = part.toLowerCase();
+      return !AFRICAN_CULTURE_CAVEATS.some((phrase) => lower.includes(phrase));
+    })[0] || normalized;
+
+  normalized = normalized
+    .replace(/\bor related .*$/i, "")
+    .replace(/\bstyle\b/gi, "")
+    .replace(/\bpeoples\b/gi, "peoples")
+    .replace(/\s*-\s*/g, " ")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+
+  normalized = normalized.replace(/\s+or\s+$/i, "").trim();
+
+  const cleanupMap = [
+    [/^central or central or west central african peoples$/i, "Central or West-Central African peoples"],
+    [/^central or west central african peoples$/i, "Central or West-Central African peoples"],
+    [/^unidentified central or central or west central african peoples$/i, "Central or West-Central African peoples"],
+    [/^unidentified west or central african peoples$/i, "West or Central African peoples"],
+    [/^unidentified west african peoples$/i, "West African peoples"],
+    [/^unidentified east or central african peoples$/i, "East or Central African peoples"],
+    [/^unidentified african peoples$/i, "African peoples"],
+    [/^central african$/i, "Central African peoples"],
+    [/^west african$/i, "West African peoples"],
+    [/^eastern congolese peoples$/i, "Lega"],
+    [/^lega peoples$/i, "Lega"],
+    [/^luba peoples$/i, "Luba"],
+    [/^dan peoples$/i, "Dan"],
+    [/^yoruba peoples$/i, "Yoruba"],
+    [/^suku peoples$/i, "Suku"],
+    [/^pende peoples$/i, "Pende"],
+    [/^baule peoples$/i, "Baule"],
+    [/^dan we$/i, "Dan or We"],
+    [/^dan or we related peoples$/i, "Dan or We"],
+    [/^songye or luba peoples$/i, "Songye or Luba"],
+    [/^hemba or luba hemba$/i, "Hemba or Luba-Hemba"],
+    [/^hemba or luba related peoples$/i, "Hemba or Luba"],
+    [/^fon or ewe fon$/i, "Fon or Ewe-Fon"],
+    [/^mbete or kota mbete$/i, "Mbete or Kota-Mbete"],
+    [/^namji\/namchi or dowayo peoples$/i, "Namji/Namchi or Dowayo"],
+    [/^baga\/nalu\/landuma$/i, "Baga/Nalu/Landuma"],
+    [/^chokwe or pende related central african peoples$/i, "Chokwe or Pende"],
+    [/^kete or kuba related peoples$/i, "Kete or Kuba"],
+    [/^kuba or closely related kasai region group$/i, "Kuba"],
+    [/^kuba or kuba influenced central african peoples$/i, "Kuba"],
+    [/^kasai region or central african peoples$/i, "Kasai region or Central African"],
+    [/^pende or central african$/i, "Pende or Central African"],
+    [/^mangbetu or central african$/i, "Mangbetu or Central African"],
+    [/^luba or central african$/i, "Luba or Central African"],
+  ];
+
+  for (const [pattern, replacement] of cleanupMap) {
+    if (pattern.test(normalized)) {
+      return replacement;
+    }
+  }
+
+  return normalized;
+}
+
+function normalizeAfricanObjectTypeLabel(value = "") {
+  if (COLLECTION_VARIANT !== "african") {
+    return value;
+  }
+
+  const normalized = String(value || "")
+    .split("/")
+    .map((part) => part.trim())
+    .filter(Boolean)[0] || "";
+
+  const lower = normalized.toLowerCase();
+
+  if (lower.includes("helmet mask")) {
+    return "Helmet mask";
+  }
+
+  if (lower.includes("face mask")) {
+    return "Face mask";
+  }
+
+  if (lower.includes("maskette")) {
+    return "Maskette";
+  }
+
+  if (lower.includes("mask")) {
+    return "Mask";
+  }
+
+  if (lower.includes("power figure")) {
+    return "Power figure";
+  }
+
+  if (lower.includes("standing female figure") || lower.includes("standing figure")) {
+    return "Standing figure";
+  }
+
+  if (lower.includes("female figure")) {
+    return "Female figure";
+  }
+
+  if (lower.includes("mother-and-child") || lower.includes("maternity figure")) {
+    return "Maternity figure";
+  }
+
+  if (lower.includes("ancestor figure")) {
+    return "Ancestor figure";
+  }
+
+  if (lower.includes("reliquary")) {
+    return "Reliquary figure";
+  }
+
+  if (lower.includes("staff")) {
+    return "Staff";
+  }
+
+  if (lower.includes("spoon")) {
+    return "Spoon";
+  }
+
+  if (lower.includes("headdress")) {
+    return "Headdress";
+  }
+
+  if (lower.includes("figure")) {
+    return "Figure";
+  }
+
+  return normalized.replace(/\s{2,}/g, " ").trim();
+}
+
+function normalizeFilterValue(fieldName, value = "") {
+  if (COLLECTION_VARIANT !== "african") {
+    return fieldName === "creator" ? normalizeCreatorName(value) : value;
+  }
+
+  if (fieldName === "culture") {
+    return normalizeAfricanCultureLabel(value);
+  }
+
+  if (fieldName === "objectType") {
+    return normalizeAfricanObjectTypeLabel(value);
+  }
+
+  if (fieldName === "creator") {
+    return normalizeCreatorName(value);
+  }
+
+  return value;
+}
+
 function hasDisplayValue(value) {
   return Boolean(String(value || "").trim());
 }
@@ -99,10 +300,13 @@ async function loadArtworks() {
   setupFeaturedWorks(artworks);
 
   if (subjectFilter && creatorFilter && sortSelect && gallery) {
-    populateFilter(subjectFilter, artworks.map((item) => getFieldValue(item, subjectFilter.dataset.field || "subject")));
+    populateFilter(
+      subjectFilter,
+      artworks.map((item) => normalizeFilterValue(subjectFilter.dataset.field || "subject", getFieldValue(item, subjectFilter.dataset.field || "subject")))
+    );
     populateFilter(
       creatorFilter,
-      artworks.map((item) => normalizeCreatorName(getFieldValue(item, creatorFilter.dataset.field || "creator")))
+      artworks.map((item) => normalizeFilterValue(creatorFilter.dataset.field || "creator", getFieldValue(item, creatorFilter.dataset.field || "creator")))
     );
     renderCollection();
   }
@@ -214,10 +418,48 @@ function renderStats(items) {
 
 function renderCollection() {
   const filtered = sortArtworks(filterArtworks());
-  renderGallery(filtered);
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  currentPage = Math.min(currentPage, totalPages);
+  const paginated = paginateArtworks(filtered, currentPage);
+  renderGallery(paginated);
+  updatePagination(filtered.length, totalPages);
   emptyState.hidden = filtered.length !== 0;
   resultsCount.textContent =
     "Use the search and filters above to refine the records displayed below.";
+}
+
+function paginateArtworks(items, page) {
+  if (COLLECTION_VARIANT !== "african") {
+    return items;
+  }
+
+  const start = (page - 1) * PAGE_SIZE;
+  return items.slice(start, start + PAGE_SIZE);
+}
+
+function updatePagination(totalItems, totalPages) {
+  if (COLLECTION_VARIANT !== "african" || !paginationTop || !paginationBottom) {
+    return;
+  }
+
+  const shouldShow = totalItems > PAGE_SIZE;
+  paginationTop.hidden = !shouldShow;
+  paginationBottom.hidden = !shouldShow;
+
+  if (!shouldShow) {
+    return;
+  }
+
+  const statusText = `Page ${currentPage} of ${totalPages}`;
+  paginationStatusTop.textContent = statusText;
+  paginationStatusBottom.textContent = statusText;
+
+  const atStart = currentPage <= 1;
+  const atEnd = currentPage >= totalPages;
+  paginationPrevTop.disabled = atStart;
+  paginationPrevBottom.disabled = atStart;
+  paginationNextTop.disabled = atEnd;
+  paginationNextBottom.disabled = atEnd;
 }
 
 function filterArtworks() {
@@ -244,11 +486,14 @@ function filterArtworks() {
 
   return artworks.filter((item) => {
     if (primaryValue && getFieldValue(item, primaryField) !== primaryValue) {
-      return false;
+      const normalizedPrimary = normalizeFilterValue(primaryField, getFieldValue(item, primaryField));
+      if (normalizedPrimary !== primaryValue) {
+        return false;
+      }
     }
 
     if (secondaryValue) {
-      const creatorValue = normalizeCreatorName(getFieldValue(item, secondaryField));
+      const creatorValue = normalizeFilterValue(secondaryField, getFieldValue(item, secondaryField));
       if (creatorValue !== secondaryValue) {
         return false;
       }
@@ -273,8 +518,8 @@ function sortArtworks(items) {
   const secondaryField = creatorFilter?.dataset.field || "creator";
 
   function compareSecondary(left, right, descending = false) {
-    const leftValue = normalizeCreatorName(getFieldValue(left, secondaryField));
-    const rightValue = normalizeCreatorName(getFieldValue(right, secondaryField));
+    const leftValue = normalizeFilterValue(secondaryField, getFieldValue(left, secondaryField));
+    const rightValue = normalizeFilterValue(secondaryField, getFieldValue(right, secondaryField));
     const leftUnknown = !leftValue || leftValue === UNKNOWN_CREATOR_LABEL;
     const rightUnknown = !rightValue || rightValue === UNKNOWN_CREATOR_LABEL;
 
@@ -426,6 +671,12 @@ function buildCard(item, config) {
   return card;
 }
 
+function setPage(page) {
+  currentPage = Math.max(1, page);
+  renderCollection();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
 function compareText(left = "", right = "") {
   return left.localeCompare(right, undefined, { sensitivity: "base" });
 }
@@ -449,10 +700,29 @@ function escapeHtml(value = "") {
 }
 
 if (searchInput && subjectFilter && creatorFilter && sortSelect) {
-  searchInput.addEventListener("input", renderCollection);
-  subjectFilter.addEventListener("change", renderCollection);
-  creatorFilter.addEventListener("change", renderCollection);
-  sortSelect.addEventListener("change", renderCollection);
+  searchInput.addEventListener("input", () => {
+    currentPage = 1;
+    renderCollection();
+  });
+  subjectFilter.addEventListener("change", () => {
+    currentPage = 1;
+    renderCollection();
+  });
+  creatorFilter.addEventListener("change", () => {
+    currentPage = 1;
+    renderCollection();
+  });
+  sortSelect.addEventListener("change", () => {
+    currentPage = 1;
+    renderCollection();
+  });
+}
+
+if (COLLECTION_VARIANT === "african") {
+  paginationPrevTop?.addEventListener("click", () => setPage(currentPage - 1));
+  paginationPrevBottom?.addEventListener("click", () => setPage(currentPage - 1));
+  paginationNextTop?.addEventListener("click", () => setPage(currentPage + 1));
+  paginationNextBottom?.addEventListener("click", () => setPage(currentPage + 1));
 }
 
 loadArtworks().catch((error) => {

@@ -831,6 +831,15 @@ h3 {
   font-size: 0.92rem;
 }
 
+.browse-page-african .card-description {
+  display: block;
+  -webkit-line-clamp: unset;
+  -webkit-box-orient: initial;
+  overflow: visible;
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
 .browse-page .card-kicker {
   margin-bottom: 8px;
 }
@@ -892,6 +901,36 @@ h3 {
 
 .card-meta dd {
   margin: 6px 0 0;
+}
+
+.browse-page-african .card-meta {
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.browse-page-african .card-meta div {
+  padding-top: 10px;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.pagination-status {
+  margin: 0;
+  min-width: 120px;
+  text-align: center;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.pagination-button[disabled] {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
 .about {

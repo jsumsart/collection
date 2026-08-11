@@ -14,7 +14,7 @@
     href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
     rel="stylesheet"
   >
-  <link rel="icon" href="./favicon.ico">
+  <link rel="icon" type="image/png" href="./assets/logo.png">
   <link rel="stylesheet" href="./styles.css?v=20260811x">
 </head>
 <body class="browse-page browse-page-african" data-collection-data-url="./site-data/african-artworks.json" data-collection-variant="african">
@@ -59,9 +59,8 @@
           <p class="section-label">Search the Collection</p>
           <h2>Find and filter records</h2>
           <p class="section-intro">
-            Search the collection by artist, title, culture, place, or keyword, then use the
-            filters to narrow your results. Collection records reflect current research and may be
-            updated as additional information becomes available.
+            Search by artist, title, culture, place, or keyword, then use the filters below to
+            narrow the records shown.
           </p>
         </div>
         <div class="toolbar toolbar-wide">
@@ -100,6 +99,12 @@
         </label>
       </section>
 
+      <nav class="pagination pagination-top" id="pagination-top" aria-label="African Art collection pages" hidden>
+        <button class="button button-secondary pagination-button" id="pagination-prev-top" type="button">Previous</button>
+        <p class="pagination-status" id="pagination-status-top">Page 1 of 1</p>
+        <button class="button button-secondary pagination-button" id="pagination-next-top" type="button">Next</button>
+      </nav>
+
       <section class="gallery-section">
         <div class="section-heading">
           <div>
@@ -114,6 +119,12 @@
         </div>
         <section class="gallery gallery-records" id="gallery" aria-label="African Art collection records"></section>
       </section>
+
+      <nav class="pagination pagination-bottom" id="pagination-bottom" aria-label="African Art collection pages" hidden>
+        <button class="button button-secondary pagination-button" id="pagination-prev-bottom" type="button">Previous</button>
+        <p class="pagination-status" id="pagination-status-bottom">Page 1 of 1</p>
+        <button class="button button-secondary pagination-button" id="pagination-next-bottom" type="button">Next</button>
+      </nav>
 
       <section class="empty-state" id="empty-state" hidden aria-live="polite">
         <p class="section-label">No Results</p>

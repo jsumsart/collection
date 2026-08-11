@@ -114,7 +114,6 @@ def object_information_rows(record):
         value = record.get(key)
         if has_public_value(value):
             rows.append((label, format_value(value)))
-    rows.append(("Acquisition Information", "Not yet documented."))
     return rows
 
 
@@ -132,43 +131,10 @@ def render_object_information(record):
     return "\n".join(rows)
 
 
-def build_research_note(record):
-    note_parts = []
-    creator = display_creator(record)
-    if creator == UNKNOWN_CREATOR_LABEL:
-        note_parts.append("The creator is not presently known.")
-    if has_public_value(record.get("attribution")):
-        note_parts.append("The current attribution reflects the existing departmental catalog and may be refined through further research.")
-    if has_public_value(record.get("date")):
-        date_value = format_value(record.get("date"))
-        if date_value.lower() == "n.d.":
-            note_parts.append("A date for the work has not yet been documented.")
-        elif date_value.lower().startswith("c."):
-            note_parts.append("The date is approximate.")
-
-    note_parts.append("The title, attribution, date, and medium shown here reflect current collection documentation.")
-    note_parts.append("Additional research into collection history, acquisition, and related scholarship is ongoing.")
-    return " ".join(note_parts)
-
-
-def build_about_text(record):
-    title = format_value(record.get("title")) or "This work"
-    creator = display_creator(record)
-    if creator == UNKNOWN_CREATOR_LABEL:
-        return (
-            f"{title} is part of the {COLLECTION_NAME}. "
-            "Research into the work, its context, and its collection history is ongoing."
-        )
-    return (
-        f"{title} by {creator} is part of the {COLLECTION_NAME}. "
-        "Research into the work, its context, and its collection history is ongoing."
-    )
-
-
 def build_rights_text(record):
     rights_holder = format_value(record.get("rights")) or "the Jackson State University Department of Art"
     return {
-        "copyright_status": "Copyright status has not yet been determined.",
+        "copyright_status": "rights restricted",
         "digital_image": f"Digital image courtesy of {COLLECTION_NAME}.",
         "reproduction": f"For information concerning image use and reproduction, contact {rights_holder}.",
     }
@@ -245,9 +211,6 @@ def render_record_page(record):
     rights = build_rights_text(record)
     citation = escape(build_citation(record))
     citation_url = f"{PUBLIC_BASE_URL}/records/{record['id']}.html"
-    about_text = escape(build_about_text(record))
-    research_note = escape(build_research_note(record))
-
     summary_items = [
         ("Date", record.get("date")),
         ("Medium", record.get("medium")),
@@ -293,7 +256,7 @@ def render_record_page(record):
     href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
     rel="stylesheet"
   >
-  <link rel="icon" href="../favicon.ico">
+  <link rel="icon" type="image/png" href="../assets/logo.png">
   <link rel="stylesheet" href="../styles.css?v=20260811z">
   <script src="../image-protection.js?v=20260811c" defer></script>
 </head>
@@ -336,11 +299,6 @@ def render_record_page(record):
 
       <section class="record-detail-grid">
         {description_panel}
-        <article class="record-panel">
-          <p class="section-label">About the Work</p>
-          <h2>Collection context</h2>
-          <p>{about_text}</p>
-        </article>
       </section>
 
       <section class="record-metadata">
@@ -354,12 +312,6 @@ def render_record_page(record):
       </section>
 
       <section class="record-detail-grid">
-        <article class="record-panel">
-          <p class="section-label">Research Notes</p>
-          <h2>Current state of research</h2>
-          <p>{research_note}</p>
-        </article>
-
         <article class="record-panel">
           <p class="section-label">Rights and Reproduction</p>
           <h2>Use and permissions</h2>
@@ -375,15 +327,6 @@ def render_record_page(record):
           <h2>Suggested citation</h2>
           <p>{citation}</p>
           <p><a class="inline-link" href="{citation_url}">{citation_url}</a></p>
-        </article>
-
-        <article class="record-panel">
-          <p class="section-label">Digital Collection Project</p>
-          <h2>Project credit</h2>
-          <p>
-            Digitization and database development led by Dr. Brittany Myburgh and Dr. Detrice Roberts,
-            with support from the Africana Digital Humanities Lab at Jackson State University.
-          </p>
         </article>
       </section>
     </main>
