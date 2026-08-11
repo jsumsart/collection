@@ -161,7 +161,7 @@ def render_record_page(record):
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=Source+Sans+3:wght@400;500;600;700&display=swap"
     rel="stylesheet"
   >
   <link rel="icon" href="../favicon.ico">
@@ -172,7 +172,11 @@ def render_record_page(record):
   <div class="page-shell">
     <header class="site-header record-header">
       <a class="brand" href="../index.html" aria-label="JSU Art home">
-        <img src="../assets/logo.png" alt="JSU Department of Art logo">
+        <img class="brand-mark" src="../assets/logo.png" alt="JSU Department of Art logo">
+        <span class="brand-lockup">
+          <span class="brand-kicker">Jackson State University</span>
+          <span class="brand-title">Department of Art Permanent Collection</span>
+        </span>
       </a>
       <nav class="site-nav" aria-label="Primary">
         <a href="../index.html">Home</a>
