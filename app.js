@@ -59,6 +59,10 @@ function getFieldValue(item, fieldName) {
   return item?.[fieldName] || "";
 }
 
+function hasDisplayValue(value) {
+  return Boolean(String(value || "").trim());
+}
+
 function displayCreator(item) {
   if (COLLECTION_VARIANT === "african") {
     return normalizeCreatorName(item.creator) || item.culture || item.objectType || "Maker or culture not recorded";
@@ -294,23 +298,23 @@ function renderGallery(items) {
       COLLECTION_VARIANT === "african"
         ? {
             kicker: item.objectNumber || "African Art Record",
-            description: item.description || "Description coming soon.",
+            description: item.description || "",
             meta: [
-              ["Date", item.date || "Not recorded"],
-              ["Culture", item.culture || "Not recorded"],
-              ["Place", item.location || "Not recorded"],
-              ["Object Type", item.objectType || "Not recorded"],
+              ["Date", item.date || ""],
+              ["Culture", item.culture || ""],
+              ["Place", item.location || ""],
+              ["Object Type", item.objectType || ""],
             ],
           }
         : {
             kicker: item.objectNumber || "Collection Record",
-            description: item.description || "Description coming soon.",
+            description: item.description || "",
             meta: [
-              ["Date", item.date || "Not recorded"],
-              ["Medium", item.medium || "Not recorded"],
-              ["Dimensions", item.dimensions || "Not recorded"],
-              ["Location", item.location || "Not recorded"],
-              ["Object Type", item.type || "Not recorded"],
+              ["Date", item.date || ""],
+              ["Medium", item.medium || ""],
+              ["Dimensions", item.dimensions || ""],
+              ["Location", item.location || ""],
+              ["Object Type", item.type || ""],
             ],
           }
     );
@@ -340,10 +344,18 @@ function buildCard(item, config) {
   card.querySelector(".card-kicker").textContent = config.kicker;
   card.querySelector("h3").textContent = item.title || "Untitled";
   card.querySelector(".card-creator").textContent = displayCreator(item);
-  card.querySelector(".card-description").textContent = config.description;
+  const description = card.querySelector(".card-description");
+  if (hasDisplayValue(config.description)) {
+    description.textContent = config.description;
+  } else {
+    description.remove();
+  }
 
   const meta = card.querySelector(".card-meta");
   for (const [label, value] of config.meta) {
+    if (!hasDisplayValue(value)) {
+      continue;
+    }
     meta.append(metaRow(label, value));
   }
 
